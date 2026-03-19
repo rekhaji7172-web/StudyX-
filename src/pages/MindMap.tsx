@@ -226,12 +226,18 @@ export default function MindMapPage() {
         <div className="flex items-center gap-3 pointer-events-auto">
           <button 
             onClick={() => navigate('/')}
-            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 shadow-sm transition-all active:scale-95"
+            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 shadow-xl transition-all active:scale-95"
           >
             <ChevronLeft size={20} />
           </button>
-          <div className="bg-white px-6 py-3 rounded-2xl border border-zinc-200 shadow-sm">
-            <h1 className="text-sm font-bold text-zinc-900">{currentMap?.title || 'Mind Map'}</h1>
+          <div className="premium-card px-6 py-3 flex items-center gap-3 shadow-xl border-brand-100">
+            <div className="w-10 h-10 bg-brand-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-brand-200">
+              <LayoutIcon size={20} />
+            </div>
+            <div>
+              <h1 className="text-sm font-black text-slate-900 uppercase tracking-tighter">{currentMap?.title || 'Mind Canvas'}</h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Visual Learning</p>
+            </div>
           </div>
         </div>
 
@@ -243,23 +249,23 @@ export default function MindMapPage() {
                 navigate('/');
               }
             }}
-            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-400 hover:text-red-500 shadow-sm transition-all active:scale-95"
+            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-400 hover:text-red-500 shadow-xl transition-all active:scale-95"
             title="Delete Mind Map"
           >
             <Trash2 size={20} />
           </button>
           <button 
             onClick={() => setShowHelp(true)}
-            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-500 hover:text-brand-600 shadow-sm transition-all active:scale-95"
+            className="p-3 bg-white rounded-2xl border border-zinc-200 text-zinc-500 hover:text-brand-600 shadow-xl transition-all active:scale-95"
             title="Help"
           >
             <HelpCircle size={20} />
           </button>
           <button 
             onClick={() => handleAddNode()}
-            className="flex items-center gap-2 action-button px-6 py-3 text-sm shadow-lg shadow-brand-100 active:scale-95"
+            className="flex items-center gap-2 premium-gradient px-6 py-3 text-sm text-white font-bold rounded-2xl shadow-xl shadow-brand-100 active:scale-95 hover:scale-105 transition-all"
           >
-            <Plus size={18} /> New Node
+            <Plus size={18} /> New Concept
           </button>
         </div>
       </div>
@@ -271,50 +277,55 @@ export default function MindMapPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-zinc-900/40 backdrop-blur-sm flex items-center justify-center p-6"
+            className="absolute inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-6"
+            onClick={() => setShowHelp(false)}
           >
             <motion.div 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
               className="premium-card max-w-md w-full p-10 shadow-2xl relative"
+              onClick={e => e.stopPropagation()}
             >
               <button 
                 onClick={() => setShowHelp(false)}
-                className="absolute top-6 right-6 p-2 text-zinc-400 hover:text-zinc-900 transition-colors"
+                className="absolute top-6 right-6 p-2 text-slate-400 hover:text-slate-900 transition-colors"
               >
                 <X size={24} />
               </button>
-              <h2 className="text-2xl font-bold text-zinc-900 mb-6 flex items-center gap-3">
-                <HelpCircle className="text-brand-600" /> Mind Map Guide
-              </h2>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 shrink-0 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold">1</div>
-                  <div>
-                    <p className="font-bold text-zinc-900">Create Nodes</p>
-                    <p className="text-sm text-zinc-500">Click the global <span className="font-bold text-brand-600">+ New Node</span> button or the small <span className="font-bold text-brand-600">+</span> on any node to create a child.</p>
-                  </div>
+              
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shadow-inner">
+                  <HelpCircle size={32} />
                 </div>
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 shrink-0 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold">2</div>
-                  <div>
-                    <p className="font-bold text-zinc-900">Connect Nodes</p>
-                    <p className="text-sm text-zinc-500">Drag from the <span className="font-bold text-brand-600">circle handle</span> on the right of a node to another node to link them.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 shrink-0 bg-brand-50 text-brand-600 rounded-xl flex items-center justify-center font-bold">3</div>
-                  <div>
-                    <p className="font-bold text-zinc-900">Interact</p>
-                    <p className="text-sm text-zinc-500">Double-click to edit text. Right-click to delete. Drag nodes to move them.</p>
-                  </div>
+                <div>
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">Canvas Guide</h2>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Master the Mind Map</p>
                 </div>
               </div>
+
+              <div className="space-y-6">
+                {[
+                  { icon: Plus, title: "Create Nodes", desc: "Click 'New Concept' or the '+' on any node to branch out." },
+                  { icon: MousePointer2, title: "Connect", desc: "Drag from the circle handle on the right to another node." },
+                  { icon: Trash2, title: "Interact", desc: "Double-click to edit. Right-click to delete. Drag to move." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 group">
+                    <div className="w-12 h-12 shrink-0 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center font-bold group-hover:bg-brand-50 group-hover:text-brand-600 transition-all">
+                      <item.icon size={20} />
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 mb-0.5">{item.title}</p>
+                      <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
               <button 
                 onClick={() => setShowHelp(false)}
-                className="w-full mt-10 bg-zinc-900 text-white py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all shadow-xl"
+                className="w-full mt-10 premium-gradient text-white py-4 rounded-2xl font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brand-100"
               >
-                Got it!
+                Got it, let's build!
               </button>
             </motion.div>
           </motion.div>

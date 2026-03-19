@@ -28,6 +28,12 @@ import { useFocusMusic } from '../hooks/useFocusMusic';
 import TimerSettings from '../components/Timer/TimerSettings';
 import FocusMode from '../components/Timer/FocusMode';
 import FocusMusicPlayer from '../components/FocusMusicPlayer';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function TimerPage() {
   const [mode, setMode] = useState<'pomodoro' | 'shortBreak' | 'longBreak'>('pomodoro');
@@ -180,15 +186,21 @@ export default function TimerPage() {
 
         {/* Timer Display */}
         <div className="relative w-72 h-72 sm:w-96 sm:h-96 flex items-center justify-center">
-          <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 400 400">
+          {/* Background Glow */}
+          <div className={cn(
+            "absolute inset-0 rounded-full blur-[100px] opacity-20 transition-all duration-1000",
+            mode === 'pomodoro' ? "bg-brand-500" : "bg-emerald-500"
+          )} />
+          
+          <svg className="absolute inset-0 w-full h-full -rotate-90 drop-shadow-[0_0_15px_rgba(99,102,241,0.3)]" viewBox="0 0 400 400">
             <circle
               cx="200"
               cy="200"
               r={radius}
               fill="none"
               stroke="currentColor"
-              strokeWidth="12"
-              className="text-zinc-100"
+              strokeWidth="8"
+              className="text-slate-100"
             />
             <motion.circle
               cx="200"
@@ -196,31 +208,33 @@ export default function TimerPage() {
               r={radius}
               fill="none"
               stroke="currentColor"
-              strokeWidth="12"
+              strokeWidth="10"
               strokeLinecap="round"
               className={`transition-colors duration-500 ${
                 mode === 'pomodoro' ? "text-brand-600" : "text-emerald-500"
               }`}
               initial={{ strokeDasharray: circumference, strokeDashoffset: circumference }}
               animate={{ strokeDashoffset: circumference - (progress / 100) * circumference }}
-              transition={{ duration: 0.5, ease: "linear" }}
+              transition={{ duration: 1, ease: "linear" }}
             />
           </svg>
 
           <div className="text-center space-y-2 relative z-10">
             <motion.div 
-              key={formatTime}
-              initial={{ scale: 0.9, opacity: 0 }}
+              key={timeLeft}
+              initial={{ scale: 0.95, opacity: 0.8 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="text-7xl sm:text-8xl font-mono font-bold tracking-tighter text-zinc-900"
+              className="text-7xl sm:text-9xl font-black tracking-tighter text-slate-900 tabular-nums"
             >
               {formatTime}
             </motion.div>
             <div className="flex items-center justify-center gap-2">
-              <span className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm border ${
-                isActive ? (isPaused ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-brand-50 text-brand-600 border-brand-100') : 'bg-zinc-50 text-zinc-400 border-zinc-100'
-              }`}>
-                {isActive ? (isPaused ? 'Paused' : 'Focusing...') : 'Ready'}
+              <div className={cn(
+                "w-2 h-2 rounded-full animate-pulse",
+                isActive && !isPaused ? "bg-emerald-500" : "bg-slate-300"
+              )} />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                {isActive ? (isPaused ? 'Paused' : 'Session Active') : 'Ready to Focus'}
               </span>
             </div>
           </div>
@@ -230,23 +244,26 @@ export default function TimerPage() {
         <div className="flex items-center gap-8 relative z-10">
           <button 
             onClick={() => handleReset()}
-            className="p-4 bg-zinc-50 text-zinc-400 rounded-2xl hover:bg-zinc-100 hover:text-zinc-900 transition-all hover:scale-110 active:scale-95 border border-zinc-100"
+            className="p-4 bg-white text-slate-400 rounded-2xl hover:text-slate-900 transition-all hover:scale-110 active:scale-90 border border-slate-100 shadow-sm"
           >
             <RotateCcw size={24} />
           </button>
           
           <button 
             onClick={isActive && !isPaused ? handlePause : handleStart}
-            className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center text-white shadow-2xl transition-all hover:scale-105 active:scale-95 ${
-              isActive && !isPaused ? "bg-zinc-900" : "bg-brand-600 shadow-brand-200"
-            }`}
+            className={cn(
+              "w-24 h-24 rounded-[2.5rem] flex items-center justify-center text-white shadow-2xl transition-all hover:scale-105 active:scale-90",
+              isActive && !isPaused 
+                ? "bg-slate-900 shadow-slate-200" 
+                : "premium-gradient shadow-brand-200"
+            )}
           >
-            {isActive && !isPaused ? <Pause size={40} /> : <Play size={40} className="fill-white ml-2" />}
+            {isActive && !isPaused ? <Pause size={40} fill="currentColor" /> : <Play size={40} fill="currentColor" className="ml-2" />}
           </button>
 
           <button 
             onClick={() => setIsMuted(!isMuted)}
-            className="p-4 bg-zinc-50 text-zinc-400 rounded-2xl hover:bg-zinc-100 hover:text-zinc-900 transition-all hover:scale-110 active:scale-95 border border-zinc-100"
+            className="p-4 bg-white text-slate-400 rounded-2xl hover:text-slate-900 transition-all hover:scale-110 active:scale-90 border border-slate-100 shadow-sm"
           >
             {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
           </button>

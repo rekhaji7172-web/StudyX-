@@ -53,6 +53,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { streak, notifications, markNotificationRead, clearNotifications, checkReminders, profile, level } = useStudyStats();
 
@@ -60,6 +61,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkReminders();
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [checkReminders]);
 
   const getFrameStyle = (frameId?: string) => {
@@ -68,19 +72,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F8F9FC] font-sans selection:bg-brand-100 selection:text-brand-900">
+    <div className="flex min-h-screen bg-[#F8F9FC] font-sans selection:bg-brand-100 selection:text-brand-900 overflow-x-hidden">
       {/* Sidebar - Desktop */}
       <aside 
         className={cn(
-          "hidden md:flex flex-col bg-white border-r border-slate-200 transition-all duration-500 sticky top-0 h-screen z-30",
-          isSidebarOpen ? "w-64" : "w-20"
+          "hidden md:flex flex-col bg-white border-r border-slate-200/60 transition-all duration-500 sticky top-0 h-screen z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]",
+          isSidebarOpen ? "w-72" : "w-24"
         )}
       >
-        <div className="h-20 flex items-center px-6">
+        <div className="h-24 flex items-center px-8">
           <Logo size="sm" showText={isSidebarOpen} />
         </div>
 
-        <nav className="flex-1 px-3 space-y-1 mt-4">
+        <nav className="flex-1 px-4 space-y-2 mt-4">
           {desktopNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -88,23 +92,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-xl transition-all group relative",
+                  "flex items-center gap-4 p-4 rounded-2xl transition-all group relative overflow-hidden",
                   isActive 
-                    ? "bg-brand-50 text-brand-600 font-semibold" 
+                    ? "bg-brand-50 text-brand-600 font-bold shadow-sm" 
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 )}
               >
-                <item.icon size={20} className={cn("shrink-0 transition-transform group-hover:scale-110", isActive ? "text-brand-600" : "text-slate-400")} />
-                {isSidebarOpen && <span className="text-sm">{item.label}</span>}
+                <item.icon size={22} className={cn("shrink-0 transition-transform duration-300 group-hover:scale-110", isActive ? "text-brand-600" : "text-slate-400 group-hover:text-slate-600")} />
+                {isSidebarOpen && <span className="text-sm tracking-tight">{item.label}</span>}
                 {!isSidebarOpen && (
-                  <div className="absolute left-full ml-4 px-2 py-1 bg-slate-900 text-white text-[10px] rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 font-bold uppercase tracking-wider">
+                  <div className="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-[-10px] group-hover:translate-x-0 whitespace-nowrap z-50 font-bold uppercase tracking-widest shadow-xl">
                     {item.label}
                   </div>
                 )}
-                {isActive && isSidebarOpen && (
+                {isActive && (
                   <motion.div 
                     layoutId="activeNav"
-                    className="absolute right-0 w-1 h-6 bg-brand-600 rounded-l-full"
+                    className="absolute left-0 w-1.5 h-8 bg-brand-600 rounded-r-full"
                   />
                 )}
               </NavLink>
@@ -112,13 +116,30 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-6 border-t border-slate-100 space-y-4">
+          <div className={cn(
+            "bg-slate-50 rounded-2xl p-4 flex items-center gap-3 border border-slate-100 transition-all",
+            !isSidebarOpen && "justify-center px-0"
+          )}>
+            <div className={cn(
+              "w-10 h-10 rounded-xl bg-brand-100 flex items-center justify-center text-brand-600 font-bold shadow-sm shrink-0",
+              getFrameStyle(profile.selectedFrame)
+            )}>
+              {profile.avatar}
+            </div>
+            {isSidebarOpen && (
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-slate-900 truncate">{profile.name}</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lvl {level}</p>
+              </div>
+            )}
+          </div>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="w-full flex items-center gap-3 p-3 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all"
+            className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all group"
           >
-            <Menu size={20} />
-            {isSidebarOpen && <span className="text-sm font-medium">Collapse</span>}
+            <Menu size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+            {isSidebarOpen && <span className="text-sm font-bold">Collapse Menu</span>}
           </button>
         </div>
       </aside>
@@ -126,23 +147,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 md:h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20">
+        <header className={cn(
+          "h-20 md:h-24 flex items-center justify-between px-6 md:px-12 sticky top-0 z-20 transition-all duration-500",
+          scrolled ? "bg-white/80 backdrop-blur-2xl border-b border-slate-200/60 shadow-sm" : "bg-transparent"
+        )}>
           {/* Mobile Header Content */}
           <div className="flex items-center justify-between w-full md:hidden">
             <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent">StudyX</span>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <div className="relative">
                 <button 
                   onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                   className={cn(
-                    "p-2 rounded-xl relative transition-all active:scale-90",
-                    isNotificationsOpen ? "bg-brand-50 text-brand-600" : "text-slate-400 hover:text-slate-900"
+                    "w-11 h-11 rounded-2xl flex items-center justify-center relative transition-all active:scale-90 border border-slate-200/60 shadow-sm",
+                    isNotificationsOpen ? "bg-brand-50 text-brand-600 border-brand-200" : "bg-white text-slate-400 hover:text-slate-900"
                   )}
                 >
                   <Bell size={20} />
                   {unreadCount > 0 && (
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                    <span className="absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm"></span>
                   )}
                 </button>
               </div>
@@ -150,7 +174,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div 
                 onClick={() => navigate('/profile')}
                 className={cn(
-                  "w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold shadow-sm transition-transform active:scale-90",
+                  "w-11 h-11 rounded-2xl bg-white border border-slate-200/60 flex items-center justify-center text-slate-700 font-bold shadow-sm transition-all active:scale-90",
                   getFrameStyle(profile.selectedFrame)
                 )}
               >
@@ -160,20 +184,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Desktop Header Content */}
-          <div className="hidden md:flex flex-1 justify-center px-8">
-            <div className="flex items-center bg-slate-100/50 rounded-xl px-4 py-2 w-full max-w-md border border-slate-200/50 focus-within:bg-white focus-within:border-brand-200 transition-all">
-              <Search size={16} className="text-slate-400" />
+          <div className="hidden md:flex flex-1 items-center gap-8">
+            <div className="flex items-center bg-white rounded-2xl px-5 py-3 w-full max-w-lg border border-slate-200/60 shadow-sm focus-within:ring-4 focus-within:ring-brand-500/10 focus-within:border-brand-500 transition-all group">
+              <Search size={18} className="text-slate-400 group-focus-within:text-brand-500 transition-colors" />
               <input 
                 type="text" 
-                placeholder="Search tasks, notes..." 
-                className="bg-transparent border-none focus:ring-0 text-sm w-full ml-2 placeholder:text-slate-400 font-medium"
+                placeholder="Search your study universe..." 
+                className="bg-transparent border-none focus:ring-0 text-sm w-full ml-3 placeholder:text-slate-400 font-semibold"
               />
             </div>
           </div>
 
           <div className="hidden md:flex items-center gap-6">
-            <div className="flex items-center gap-2 bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-100 font-bold text-[10px] uppercase tracking-wider">
-              <Flame size={14} className="fill-orange-500" />
+            <div className="flex items-center gap-2.5 bg-orange-50 text-orange-600 px-4 py-2 rounded-2xl border border-orange-100 font-bold text-xs shadow-sm">
+              <Flame size={18} className="fill-orange-500 animate-pulse" />
               <span>{streak} Day Streak</span>
             </div>
             
@@ -181,27 +205,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <button 
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                 className={cn(
-                  "p-2 rounded-xl relative transition-all",
-                  isNotificationsOpen ? "bg-brand-50 text-brand-600" : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                  "w-12 h-12 rounded-2xl flex items-center justify-center relative transition-all border border-slate-200/60 shadow-sm",
+                  isNotificationsOpen ? "bg-brand-50 text-brand-600 border-brand-200" : "bg-white text-slate-400 hover:text-slate-900 hover:border-brand-200"
                 )}
               >
-                <Bell size={20} />
+                <Bell size={22} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                  <span className="absolute top-3.5 right-3.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse shadow-sm"></span>
                 )}
               </button>
             </div>
 
             <div 
               onClick={() => navigate('/profile')}
-              className="flex items-center gap-3 pl-6 border-l border-slate-200 cursor-pointer group"
+              className="flex items-center gap-4 pl-8 border-l border-slate-200 cursor-pointer group"
             >
               <div className="text-right hidden lg:block">
-                <div className="text-sm font-bold text-slate-900 group-hover:text-brand-600 transition-colors">{profile.name}</div>
+                <div className="text-sm font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">{profile.name}</div>
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scholar Level {level}</div>
               </div>
               <div className={cn(
-                "w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold shadow-sm group-hover:scale-105 transition-all",
+                "w-12 h-12 rounded-2xl bg-white border border-slate-200/60 flex items-center justify-center text-slate-700 font-bold shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all",
                 getFrameStyle(profile.selectedFrame)
               )}>
                 {profile.avatar}
@@ -219,25 +243,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 onClick={() => setIsNotificationsOpen(false)} 
               />
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="fixed md:absolute top-16 md:top-auto md:right-8 mt-2 md:mt-3 w-[calc(100%-2rem)] md:w-80 left-4 md:left-auto bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden"
-                style={{
-                  top: typeof window !== 'undefined' && window.innerWidth < 768 ? '4.5rem' : undefined,
-                  right: typeof window !== 'undefined' && window.innerWidth < 768 ? '1rem' : undefined,
-                }}
+                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                className="fixed md:absolute top-20 md:top-auto md:right-12 mt-4 w-[calc(100%-3rem)] md:w-96 left-6 md:left-auto bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-slate-100 z-50 overflow-hidden"
               >
-                <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                  <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
+                <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+                  <h3 className="text-base font-bold text-slate-900">Notifications</h3>
                   <button 
                     onClick={clearNotifications}
-                    className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-brand-600 transition-colors"
+                    className="text-[10px] font-bold text-brand-600 bg-brand-50 px-3 py-1 rounded-full uppercase tracking-widest hover:bg-brand-100 transition-colors"
                   >
                     Clear All
                   </button>
                 </div>
-                <div className="max-h-[360px] overflow-y-auto">
+                <div className="max-h-[420px] overflow-y-auto no-scrollbar">
                   {notifications.length > 0 ? (
                     notifications.map((n) => (
                       <div 
@@ -247,53 +267,57 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                           setIsNotificationsOpen(false);
                         }}
                         className={cn(
-                          "p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer flex gap-3",
-                          !n.read && "bg-brand-50/30"
+                          "p-5 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer flex gap-4 group",
+                          !n.read && "bg-brand-50/20"
                         )}
                       >
                         <div className={cn(
-                          "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
+                          "w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform",
                           n.type === 'achievement' ? "bg-amber-100 text-amber-600" : 
                           n.type === 'streak' ? "bg-orange-100 text-orange-600" :
                           "bg-brand-100 text-brand-600"
                         )}>
-                          {n.type === 'achievement' ? <Trophy size={16} /> : 
-                           n.type === 'streak' ? <Flame size={16} /> : 
-                           <Bell size={16} />}
+                          {n.type === 'achievement' ? <Trophy size={20} /> : 
+                           n.type === 'streak' ? <Flame size={20} /> : 
+                           <Bell size={20} />}
                         </div>
-                        <div className="flex-1">
-                          <div className="text-xs font-bold text-slate-900 mb-0.5">{n.title}</div>
-                          <div className="text-[11px] text-slate-500 leading-relaxed">{n.message}</div>
-                          <div className="text-[9px] text-slate-400 mt-1 font-medium">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-bold text-slate-900 mb-0.5">{n.title}</div>
+                          <div className="text-xs text-slate-500 leading-relaxed line-clamp-2">{n.message}</div>
+                          <div className="text-[10px] text-slate-400 mt-2 font-bold uppercase tracking-wider">
                             {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
-                        {!n.read && <div className="w-1.5 h-1.5 bg-brand-600 rounded-full mt-1.5" />}
+                        {!n.read && <div className="w-2 h-2 bg-brand-600 rounded-full mt-2 shadow-[0_0_8px_rgba(92,103,232,0.5)]" />}
                       </div>
                     ))
                   ) : (
-                    <div className="p-10 text-center">
-                      <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-300">
-                        <Bell size={24} />
+                    <div className="p-12 text-center">
+                      <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+                        <Bell size={32} />
                       </div>
-                      <p className="text-xs text-slate-500 font-medium">No new notifications</p>
+                      <p className="text-sm text-slate-500 font-bold">All caught up!</p>
+                      <p className="text-xs text-slate-400 mt-1">No new notifications for now.</p>
                     </div>
                   )}
                 </div>
+                <button className="w-full py-4 text-center text-xs font-bold text-brand-600 hover:bg-brand-50 transition-colors border-t border-slate-50">
+                  View Notification History
+                </button>
               </motion.div>
             </>
           )}
         </AnimatePresence>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
             >
               {children}
             </motion.div>
@@ -301,7 +325,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
 
         {/* Mobile Bottom Nav */}
-        <nav className="md:hidden fixed bottom-6 left-4 right-4 h-16 bg-white/90 backdrop-blur-xl border border-slate-200/60 rounded-2xl flex justify-around items-center px-2 z-20 shadow-lg shadow-slate-200/50">
+        <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 bg-slate-900/95 backdrop-blur-2xl border border-white/10 rounded-[32px] flex justify-around items-center px-4 z-40 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
@@ -309,11 +333,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 w-14 h-12 rounded-xl transition-all active:scale-90",
-                  isActive ? "text-brand-600 bg-brand-50/50" : "text-slate-400"
+                   "relative flex flex-col items-center justify-center gap-1.5 w-14 h-14 rounded-2xl transition-all active:scale-90",
+                   isActive ? "text-white" : "text-slate-500"
                 )}
               >
-                <item.icon size={20} className={isActive ? "scale-110" : ""} />
+                {isActive && (
+                  <>
+                    <motion.div 
+                      layoutId="mobileNav"
+                      className="absolute inset-0 bg-brand-600 rounded-2xl -z-10 shadow-[0_8px_20px_rgba(92,103,232,0.4)]"
+                    />
+                    <motion.div 
+                      layoutId="mobileNavGlow"
+                      className="absolute -inset-1 bg-brand-500/20 blur-xl rounded-2xl -z-20"
+                    />
+                  </>
+                )}
+                <item.icon size={20} className={cn("transition-transform duration-300", isActive ? "scale-110" : "scale-100")} />
                 <span className="text-[9px] font-bold uppercase tracking-tighter">{item.label}</span>
               </NavLink>
             );

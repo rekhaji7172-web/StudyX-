@@ -106,16 +106,48 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex flex-col items-center justify-center h-24 w-24 md:h-28 md:w-28 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Flame size={28} className="text-orange-500 fill-orange-500/20 mb-1" />
+          <div className="flex items-center justify-center gap-4 md:gap-8">
+            <div className="relative flex items-center justify-center">
+              <svg className="w-28 h-28 md:w-36 md:h-36 -rotate-90">
+                <circle
+                  cx="50%"
+                  cy="50%"
+                  r="45%"
+                  className="stroke-white/10 fill-none"
+                  strokeWidth="8"
+                />
+                <motion.circle
+                  cx="50%"
+                  cy="50%"
+                  r="45%"
+                  className="stroke-brand-500 fill-none"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  initial={{ strokeDasharray: "0 1000" }}
+                  animate={{ strokeDasharray: `${xpProgress * 2.8} 1000` }}
+                  transition={{ duration: 2, ease: "easeOut" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-3xl md:text-4xl font-black text-white">{level}</span>
+                <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-brand-300">Level</span>
+              </div>
+              
+              {/* Floating XP Badge */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1 }}
+                className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-lg border-2 border-slate-900"
+              >
+                {xp} XP
+              </motion.div>
+            </div>
+
+            <div className="hidden sm:flex flex-col items-center justify-center h-24 w-24 md:h-28 md:w-28 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm group hover:bg-white/10 transition-all cursor-default">
+              <Flame size={28} className="text-orange-500 fill-orange-500/20 mb-1 group-hover:scale-110 transition-transform" />
               <span className="text-xl md:text-2xl font-black">{streak}</span>
               <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-slate-400">Streak</span>
-            </div>
-            <div className="flex flex-col items-center justify-center h-24 w-24 md:h-28 md:w-28 rounded-3xl bg-brand-600 shadow-lg shadow-brand-500/20">
-              <Trophy size={28} className="text-white mb-1" />
-              <span className="text-xl md:text-2xl font-black">{level}</span>
-              <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-brand-200">Level</span>
             </div>
           </div>
         </div>

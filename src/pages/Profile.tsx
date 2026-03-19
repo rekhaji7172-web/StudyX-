@@ -18,9 +18,19 @@ import {
   X as CloseIcon,
   Camera,
   Layout,
-  Palette
+  Palette,
+  Clock,
+  Brain,
+  Sparkles,
+  Settings
 } from 'lucide-react';
-import { useStudyStats } from '../hooks/useStudyData';
+import { useStudyStats, useFlashcards, useTasks } from '../hooks/useStudyData';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export default function Profile() {
   const { 
@@ -39,7 +49,11 @@ export default function Profile() {
     updateProfile
   } = useStudyStats();
 
-  const [activeTab, setActiveTab] = useState<'achievements' | 'store' | 'customize'>('achievements');
+  const { flashcards } = useFlashcards();
+  const { tasks } = useTasks();
+  const completedTasks = tasks.filter(t => t.completed).length;
+
+  const [activeTab, setActiveTab] = useState<'achievements' | 'store' | 'customize' | 'stats'>('stats');
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(profile.name);
   const [editBio, setEditBio] = useState(profile.bio);
@@ -207,64 +221,75 @@ export default function Profile() {
         </div>
       </section>
 
-      {/* Stats Grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {[
-          { label: 'Total Sessions', value: totalSessions, icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Focus Minutes', value: totalFocusTime, icon: Zap, color: 'text-brand-600', bg: 'bg-brand-50' },
-          { label: 'Streak Record', value: `${streak} Days`, icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50' },
-          { label: 'Level', value: level, icon: Trophy, color: 'text-amber-600', bg: 'bg-amber-50' },
-        ].map((stat, i) => (
-          <div key={i} className="premium-card p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-200 transition-all">
-            <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.bg} ${stat.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform`}>
-              <stat.icon size={20} className="md:w-6 md:h-6" />
-            </div>
-            <div className="text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{stat.label}</div>
-            <div className="text-xl md:text-2xl font-bold text-zinc-900">{stat.value}</div>
-          </div>
-        ))}
-      </section>
-
       {/* Tabs */}
-      <div className="flex flex-col space-y-6">
-        <div className="flex p-1 bg-zinc-100 rounded-2xl self-center md:self-start gap-1 w-full md:w-auto overflow-x-auto no-scrollbar">
+      <div className="flex p-1.5 bg-slate-100 rounded-3xl gap-1 mb-8 w-fit mx-auto md:mx-0 overflow-x-auto no-scrollbar">
+        {[
+          { id: 'stats', label: 'Overview', icon: Trophy },
+          { id: 'achievements', label: 'Achievements', icon: Sparkles },
+          { id: 'store', label: 'Store', icon: ShoppingBag },
+          { id: 'customize', label: 'Customize', icon: Palette },
+        ].map((tab) => (
           <button
-            onClick={() => setActiveTab('achievements')}
-            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
-              activeTab === 'achievements' 
-                ? "bg-white text-brand-600 shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-900"
-            }`}
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as any)}
+            className={cn(
+              "flex items-center gap-2 px-6 py-3 rounded-2xl text-sm font-bold transition-all relative z-10",
+              activeTab === tab.id 
+                ? "text-brand-600" 
+                : "text-slate-500 hover:text-slate-900"
+            )}
           >
-            <Trophy size={16} />
-            Achievements
+            <tab.icon size={18} />
+            <span className="hidden sm:inline">{tab.label}</span>
+            {activeTab === tab.id && (
+              <motion.div 
+                layoutId="activeTabProfile"
+                className="absolute inset-0 bg-white rounded-2xl -z-10 shadow-sm"
+                transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+              />
+            )}
           </button>
-          <button
-            onClick={() => setActiveTab('store')}
-            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
-              activeTab === 'store' 
-                ? "bg-white text-brand-600 shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-900"
-            }`}
-          >
-            <ShoppingBag size={16} />
-            Store
-          </button>
-          <button
-            onClick={() => setActiveTab('customize')}
-            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
-              activeTab === 'customize' 
-                ? "bg-white text-brand-600 shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-900"
-            }`}
-          >
-            <Palette size={16} />
-            Customize
-          </button>
-        </div>
+        ))}
+      </div>
 
-        <AnimatePresence mode="wait">
-          {activeTab === 'achievements' ? (
+      <AnimatePresence mode="wait">
+        {activeTab === 'stats' ? (
+          <motion.div
+            key="stats"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-8"
+          >
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {[
+                { label: 'Total Focus', value: `${Math.floor(totalFocusTime / 60)}h ${totalFocusTime % 60}m`, icon: Clock, color: 'brand' },
+                { label: 'Current Streak', value: `${streak} Days`, icon: Flame, color: 'orange' },
+                { label: 'Tasks Done', value: completedTasks, icon: CheckCircle2, color: 'emerald' },
+                { label: 'Flashcards', value: flashcards.length, icon: Brain, color: 'blue' },
+              ].map((stat, i) => (
+                <motion.div 
+                  key={i}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  className="premium-card p-6 flex flex-col items-center text-center group transition-all hover:shadow-xl"
+                >
+                  <div className={cn(
+                    "w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 shadow-inner",
+                    stat.color === 'brand' ? "bg-brand-50 text-brand-600" :
+                    stat.color === 'orange' ? "bg-orange-50 text-orange-600" :
+                    stat.color === 'emerald' ? "bg-emerald-50 text-emerald-600" :
+                    "bg-blue-50 text-blue-600"
+                  )}>
+                    <stat.icon size={28} />
+                  </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.label}</div>
+                  <div className="text-xl font-black text-slate-900">{stat.value}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        ) : activeTab === 'achievements' ? (
             <motion.div
               key="achievements"
               initial={{ opacity: 0, y: 10 }}
@@ -441,6 +466,5 @@ export default function Profile() {
           )}
         </AnimatePresence>
       </div>
-    </div>
-  );
+    );
 }

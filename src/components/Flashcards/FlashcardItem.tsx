@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Trash2, AlertCircle, Clock, CheckCircle2 } from 'lucide-react';
 import { Flashcard } from '../../types';
 import { useRevisionRadar } from '../../hooks/useStudyData';
@@ -26,35 +27,52 @@ export default function FlashcardItem({ card, onDelete }: FlashcardItemProps) {
   const config = statusConfig[status];
 
   return (
-    <div className="premium-card p-6 group relative transition-all hover:shadow-md">
-      <div className="flex items-center justify-between mb-4">
+    <motion.div
+      layout
+      whileHover={{ y: -4, scale: 1.01 }}
+      className="premium-card p-6 group relative transition-all hover:shadow-xl hover:border-brand-200 overflow-hidden"
+    >
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+      
+      <div className="flex items-center justify-between mb-4 relative z-10">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 bg-zinc-50 px-2 py-1 rounded">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-brand-600 bg-brand-50 border border-brand-100 px-2.5 py-1 rounded-lg">
             {card.subject}
           </span>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded text-[8px] font-black uppercase tracking-tighter ${config.bg} ${config.color}`}>
-            <config.icon size={10} />
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tight shadow-sm border ${config.bg} ${config.color} ${status === 'red' ? 'animate-pulse border-red-100' : 'border-transparent'}`}>
+            <config.icon size={12} />
             {config.label}
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-full border border-slate-100">
           {[...Array(5)].map((_, i) => (
             <div 
               key={i} 
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${i < card.masteryLevel ? 'bg-brand-500' : 'bg-zinc-200'}`} 
+              className={`w-2 h-2 rounded-full transition-all duration-500 ${
+                i < card.masteryLevel 
+                  ? 'bg-brand-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' 
+                  : 'bg-slate-200'
+              }`} 
             />
           ))}
         </div>
       </div>
-      <h3 className="font-medium text-zinc-900 mb-2 line-clamp-2">{card.question}</h3>
-      <p className="text-zinc-400 text-sm italic line-clamp-2">{card.answer}</p>
+      
+      <h3 className="font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-brand-600 transition-colors relative z-10 leading-tight">
+        {card.question}
+      </h3>
+      <p className="text-slate-500 text-sm italic line-clamp-2 relative z-10 leading-relaxed">
+        {card.answer}
+      </p>
       
       <button 
         onClick={() => onDelete(card.id)}
-        className="absolute top-4 right-4 p-2 text-zinc-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="absolute top-4 right-4 p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl opacity-0 group-hover:opacity-100 transition-all z-20"
       >
-        <Trash2 size={16} />
+        <Trash2 size={18} />
       </button>
-    </div>
+      
+      <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-brand-50 rounded-full opacity-0 group-hover:opacity-50 blur-2xl transition-opacity" />
+    </motion.div>
   );
 }
