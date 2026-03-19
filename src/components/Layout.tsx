@@ -129,42 +129,46 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <header className="h-16 md:h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-20">
           {/* Mobile Header Content */}
           <div className="flex items-center justify-between w-full md:hidden">
-             <div 
-               onClick={() => navigate('/profile')}
-               className={cn(
-                 "w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold shadow-sm transition-transform active:scale-90",
-                 getFrameStyle(profile.selectedFrame)
-               )}
-             >
-               {profile.avatar}
-             </div>
-             
-             <span className="text-lg font-bold tracking-tight text-slate-900">StudyX</span>
+            <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-brand-600 to-brand-800 bg-clip-text text-transparent">StudyX</span>
 
-             <div className="flex items-center gap-2">
-               <button 
-                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                 className={cn(
-                   "p-2 rounded-xl relative transition-all active:scale-90",
-                   isNotificationsOpen ? "bg-brand-50 text-brand-600" : "text-slate-400 hover:text-slate-900"
-                 )}
-               >
-                 <Bell size={20} />
-                 {unreadCount > 0 && (
-                   <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-                 )}
-               </button>
-             </div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <button 
+                  onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                  className={cn(
+                    "p-2 rounded-xl relative transition-all active:scale-90",
+                    isNotificationsOpen ? "bg-brand-50 text-brand-600" : "text-slate-400 hover:text-slate-900"
+                  )}
+                >
+                  <Bell size={20} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                  )}
+                </button>
+              </div>
+
+              <div 
+                onClick={() => navigate('/profile')}
+                className={cn(
+                  "w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold shadow-sm transition-transform active:scale-90",
+                  getFrameStyle(profile.selectedFrame)
+                )}
+              >
+                {profile.avatar}
+              </div>
+            </div>
           </div>
 
           {/* Desktop Header Content */}
-          <div className="hidden md:flex items-center bg-slate-100/50 rounded-xl px-4 py-2 w-full max-w-sm border border-slate-200/50 focus-within:bg-white focus-within:border-brand-200 transition-all">
-            <Search size={16} className="text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search tasks, notes..." 
-              className="bg-transparent border-none focus:ring-0 text-sm w-full ml-2 placeholder:text-slate-400 font-medium"
-            />
+          <div className="hidden md:flex flex-1 justify-center px-8">
+            <div className="flex items-center bg-slate-100/50 rounded-xl px-4 py-2 w-full max-w-md border border-slate-200/50 focus-within:bg-white focus-within:border-brand-200 transition-all">
+              <Search size={16} className="text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search tasks, notes..." 
+                className="bg-transparent border-none focus:ring-0 text-sm w-full ml-2 placeholder:text-slate-400 font-medium"
+              />
+            </div>
           </div>
 
           <div className="hidden md:flex items-center gap-6">
@@ -183,76 +187,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 <Bell size={20} />
                 {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
                 )}
               </button>
-
-              <AnimatePresence>
-                {isNotificationsOpen && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-40" 
-                      onClick={() => setIsNotificationsOpen(false)} 
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 overflow-hidden"
-                    >
-                      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
-                        <button 
-                          onClick={clearNotifications}
-                          className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-brand-600 transition-colors"
-                        >
-                          Clear All
-                        </button>
-                      </div>
-                      <div className="max-h-[360px] overflow-y-auto">
-                        {notifications.length > 0 ? (
-                          notifications.map((n) => (
-                            <div 
-                              key={n.id} 
-                              onClick={() => markNotificationRead(n.id)}
-                              className={cn(
-                                "p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer flex gap-3",
-                                !n.read && "bg-brand-50/30"
-                              )}
-                            >
-                              <div className={cn(
-                                "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
-                                n.type === 'achievement' ? "bg-amber-100 text-amber-600" : 
-                                n.type === 'streak' ? "bg-orange-100 text-orange-600" :
-                                "bg-brand-100 text-brand-600"
-                              )}>
-                                {n.type === 'achievement' ? <Trophy size={16} /> : 
-                                 n.type === 'streak' ? <Flame size={16} /> : 
-                                 <Bell size={16} />}
-                              </div>
-                              <div className="flex-1">
-                                <div className="text-xs font-bold text-slate-900 mb-0.5">{n.title}</div>
-                                <div className="text-[11px] text-slate-500 leading-relaxed">{n.message}</div>
-                                <div className="text-[9px] text-slate-400 mt-1 font-medium">
-                                  {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </div>
-                              </div>
-                              {!n.read && <div className="w-1.5 h-1.5 bg-brand-600 rounded-full mt-1.5" />}
-                            </div>
-                          ))
-                        ) : (
-                          <div className="p-10 text-center">
-                            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-300">
-                              <Bell size={24} />
-                            </div>
-                            <p className="text-xs text-slate-500 font-medium">No new notifications</p>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
             </div>
 
             <div 
@@ -272,6 +209,81 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
+
+        {/* Shared Notification Dropdown */}
+        <AnimatePresence>
+          {isNotificationsOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setIsNotificationsOpen(false)} 
+              />
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="fixed md:absolute top-16 md:top-auto md:right-8 mt-2 md:mt-3 w-[calc(100%-2rem)] md:w-80 left-4 md:left-auto bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden"
+                style={{
+                  top: typeof window !== 'undefined' && window.innerWidth < 768 ? '4.5rem' : undefined,
+                  right: typeof window !== 'undefined' && window.innerWidth < 768 ? '1rem' : undefined,
+                }}
+              >
+                <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                  <h3 className="text-sm font-bold text-slate-900">Notifications</h3>
+                  <button 
+                    onClick={clearNotifications}
+                    className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-brand-600 transition-colors"
+                  >
+                    Clear All
+                  </button>
+                </div>
+                <div className="max-h-[360px] overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map((n) => (
+                      <div 
+                        key={n.id} 
+                        onClick={() => {
+                          markNotificationRead(n.id);
+                          setIsNotificationsOpen(false);
+                        }}
+                        className={cn(
+                          "p-4 border-b border-slate-50 hover:bg-slate-50 transition-colors cursor-pointer flex gap-3",
+                          !n.read && "bg-brand-50/30"
+                        )}
+                      >
+                        <div className={cn(
+                          "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
+                          n.type === 'achievement' ? "bg-amber-100 text-amber-600" : 
+                          n.type === 'streak' ? "bg-orange-100 text-orange-600" :
+                          "bg-brand-100 text-brand-600"
+                        )}>
+                          {n.type === 'achievement' ? <Trophy size={16} /> : 
+                           n.type === 'streak' ? <Flame size={16} /> : 
+                           <Bell size={16} />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs font-bold text-slate-900 mb-0.5">{n.title}</div>
+                          <div className="text-[11px] text-slate-500 leading-relaxed">{n.message}</div>
+                          <div className="text-[9px] text-slate-400 mt-1 font-medium">
+                            {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </div>
+                        {!n.read && <div className="w-1.5 h-1.5 bg-brand-600 rounded-full mt-1.5" />}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-10 text-center">
+                      <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-300">
+                        <Bell size={24} />
+                      </div>
+                      <p className="text-xs text-slate-500 font-medium">No new notifications</p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {/* Page Content */}
         <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">

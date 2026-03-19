@@ -62,13 +62,13 @@ export default function Dashboard() {
       <motion.section 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white shadow-2xl shadow-slate-200"
+        className="relative overflow-hidden rounded-[2rem] bg-slate-900 p-6 md:p-8 text-white shadow-2xl shadow-slate-200"
       >
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
-        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-600/30 blur-3xl" />
+        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-indigo-500/20 blur-3xl" />
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-          <div className="max-w-md">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
+          <div className="max-w-md text-center md:text-left">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -78,19 +78,19 @@ export default function Dashboard() {
               <Sparkles size={12} />
               <span>Your Daily Overview</span>
             </motion.div>
-            <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight">
               {hasData ? `Keep it up, ${profile.name.split(' ')[0]}!` : "Ready to start, Scholar?"}
             </h1>
-            <p className="mt-3 text-slate-400 text-sm leading-relaxed">
+            <p className="mt-3 text-slate-400 text-xs md:text-sm leading-relaxed">
               {hasData 
                 ? `You've reached Level ${level} with ${streak} days streak. Your focus is improving every day.`
                 : "StudyX is your professional control center for academic excellence. Let's organize your first session."}
             </p>
             
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-6 md:mt-8 flex flex-wrap justify-center md:justify-start gap-3">
               <button 
                 onClick={() => navigate('/timer')}
-                className="action-button flex items-center gap-2"
+                className="action-button flex items-center gap-2 px-6 py-2.5 md:py-3"
               >
                 <Clock size={18} />
                 <span>Start Session</span>
@@ -98,7 +98,7 @@ export default function Dashboard() {
               {!hasData && (
                 <button 
                   onClick={() => navigate('/planner')}
-                  className="secondary-button !bg-white/5 !text-white !border-white/10 hover:!bg-white/10"
+                  className="secondary-button !bg-white/5 !text-white !border-white/10 hover:!bg-white/10 px-6 py-2.5 md:py-3"
                 >
                   Create Plan
                 </button>
@@ -106,16 +106,16 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex flex-col items-center justify-center h-28 w-28 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
-              <Flame size={32} className="text-orange-500 fill-orange-500/20 mb-1" />
-              <span className="text-2xl font-black">{streak}</span>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Streak</span>
+          <div className="flex items-center justify-center gap-4">
+            <div className="flex flex-col items-center justify-center h-24 w-24 md:h-28 md:w-28 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <Flame size={28} className="text-orange-500 fill-orange-500/20 mb-1" />
+              <span className="text-xl md:text-2xl font-black">{streak}</span>
+              <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-slate-400">Streak</span>
             </div>
-            <div className="flex flex-col items-center justify-center h-28 w-28 rounded-3xl bg-brand-600 shadow-lg shadow-brand-500/20">
-              <Trophy size={32} className="text-white mb-1" />
-              <span className="text-2xl font-black">{level}</span>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-brand-200">Level</span>
+            <div className="flex flex-col items-center justify-center h-24 w-24 md:h-28 md:w-28 rounded-3xl bg-brand-600 shadow-lg shadow-brand-500/20">
+              <Trophy size={28} className="text-white mb-1" />
+              <span className="text-xl md:text-2xl font-black">{level}</span>
+              <span className="text-[8px] md:text-[9px] font-bold uppercase tracking-widest text-brand-200">Level</span>
             </div>
           </div>
         </div>
@@ -153,10 +153,10 @@ export default function Dashboard() {
       {/* Quick Actions Grid */}
       <section>
         <div className="flex items-center justify-between mb-5 px-1">
-          <h2 className="text-xl font-bold text-slate-900">Control Center</h2>
+          <h2 className="text-lg md:text-xl font-bold text-slate-900">Control Center</h2>
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quick Access</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {quickActions.map((action, i) => (
             <motion.button 
               key={action.label}
@@ -166,13 +166,13 @@ export default function Dashboard() {
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate(action.path)}
-              className="premium-card p-5 flex flex-col items-center text-center group premium-card-hover"
+              className="premium-card p-4 md:p-5 flex flex-col items-center text-center group premium-card-hover"
             >
-              <div className={`w-14 h-14 ${action.bg} ${action.color} rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform`}>
-                <action.icon size={28} />
+              <div className={`w-12 h-12 md:w-14 md:h-14 ${action.bg} ${action.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 shadow-sm group-hover:scale-110 transition-transform`}>
+                <action.icon size={24} className="md:w-7 md:h-7" />
               </div>
-              <span className="text-sm font-bold text-slate-900 mb-1">{action.label}</span>
-              <span className="text-[10px] font-medium text-slate-400">{action.desc}</span>
+              <span className="text-xs md:text-sm font-bold text-slate-900 mb-1">{action.label}</span>
+              <span className="text-[9px] md:text-[10px] font-medium text-slate-400">{action.desc}</span>
             </motion.button>
           ))}
         </div>

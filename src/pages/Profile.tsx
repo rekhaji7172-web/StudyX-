@@ -81,9 +81,9 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex flex-col space-y-8 pb-20">
+    <div className="flex flex-col space-y-6 md:space-y-8 pb-24">
       {/* Profile Header */}
-      <section className={`premium-card p-8 relative overflow-hidden transition-colors duration-500 ${getBackgroundStyle(profile.selectedBackground)}`}>
+      <section className={`premium-card p-6 md:p-8 relative overflow-hidden transition-colors duration-500 ${getBackgroundStyle(profile.selectedBackground)}`}>
         {profile.selectedBackground === 'bg_stars' && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {[...Array(20)].map((_, i) => (
@@ -125,9 +125,9 @@ export default function Profile() {
             </div>
           </div>
           
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-1 text-center md:text-left w-full">
             {isEditing ? (
-              <div className="space-y-4 max-w-md">
+              <div className="space-y-4 max-w-md mx-auto md:mx-0">
                 <input 
                   type="text"
                   value={editName}
@@ -170,18 +170,18 @@ export default function Profile() {
                 </div>
                 <p className="text-zinc-500 font-medium mt-1">{profile.bio}</p>
                 
-                <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-4">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                    <Flame size={18} className="text-orange-500 fill-orange-500" />
-                    <span className="text-sm font-bold">{streak} Day Streak</span>
+                <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-3 md:gap-4">
+                  <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                    <Flame size={16} className="text-orange-500 fill-orange-500" />
+                    <span className="text-xs md:text-sm font-bold">{streak} Day Streak</span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                    <Zap size={18} className="text-brand-600 fill-brand-600" />
-                    <span className="text-sm font-bold">{xp} Total XP</span>
+                  <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                    <Zap size={16} className="text-brand-600 fill-brand-600" />
+                    <span className="text-xs md:text-sm font-bold">{xp} Total XP</span>
                   </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                    <Trophy size={18} className="text-amber-500 fill-amber-500" />
-                    <span className="text-sm font-bold">{unlockedAchievements.length} Badges</span>
+                  <div className="flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                    <Trophy size={16} className="text-amber-500 fill-amber-500" />
+                    <span className="text-xs md:text-sm font-bold">{unlockedAchievements.length} Badges</span>
                   </div>
                 </div>
               </>
@@ -208,57 +208,57 @@ export default function Profile() {
       </section>
 
       {/* Stats Grid */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {[
           { label: 'Total Sessions', value: totalSessions, icon: Shield, color: 'text-blue-600', bg: 'bg-blue-50' },
           { label: 'Focus Minutes', value: totalFocusTime, icon: Zap, color: 'text-brand-600', bg: 'bg-brand-50' },
           { label: 'Streak Record', value: `${streak} Days`, icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50' },
           { label: 'Level', value: level, icon: Trophy, color: 'text-amber-600', bg: 'bg-amber-50' },
         ].map((stat, i) => (
-          <div key={i} className="premium-card p-6 flex flex-col items-center text-center group hover:border-brand-200 transition-all">
-            <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-              <stat.icon size={24} />
+          <div key={i} className="premium-card p-4 md:p-6 flex flex-col items-center text-center group hover:border-brand-200 transition-all">
+            <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.bg} ${stat.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4 group-hover:scale-110 transition-transform`}>
+              <stat.icon size={20} className="md:w-6 md:h-6" />
             </div>
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{stat.label}</div>
-            <div className="text-2xl font-bold text-zinc-900">{stat.value}</div>
+            <div className="text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">{stat.label}</div>
+            <div className="text-xl md:text-2xl font-bold text-zinc-900">{stat.value}</div>
           </div>
         ))}
       </section>
 
       {/* Tabs */}
       <div className="flex flex-col space-y-6">
-        <div className="flex p-1.5 bg-zinc-100 rounded-3xl self-center sm:self-start gap-1">
+        <div className="flex p-1 bg-zinc-100 rounded-2xl self-center md:self-start gap-1 w-full md:w-auto overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab('achievements')}
-            className={`flex items-center gap-2 px-8 py-3 rounded-2xl text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
               activeTab === 'achievements' 
-                ? "bg-white text-brand-600 shadow-md" 
+                ? "bg-white text-brand-600 shadow-sm" 
                 : "text-zinc-500 hover:text-zinc-900"
             }`}
           >
-            <Trophy size={18} />
+            <Trophy size={16} />
             Achievements
           </button>
           <button
             onClick={() => setActiveTab('store')}
-            className={`flex items-center gap-2 px-8 py-3 rounded-2xl text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
               activeTab === 'store' 
-                ? "bg-white text-brand-600 shadow-md" 
+                ? "bg-white text-brand-600 shadow-sm" 
                 : "text-zinc-500 hover:text-zinc-900"
             }`}
           >
-            <ShoppingBag size={18} />
-            Rewards Store
+            <ShoppingBag size={16} />
+            Store
           </button>
           <button
             onClick={() => setActiveTab('customize')}
-            className={`flex items-center gap-2 px-8 py-3 rounded-2xl text-sm font-bold transition-all ${
+            className={`flex items-center justify-center gap-2 px-4 md:px-8 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex-1 md:flex-none ${
               activeTab === 'customize' 
-                ? "bg-white text-brand-600 shadow-md" 
+                ? "bg-white text-brand-600 shadow-sm" 
                 : "text-zinc-500 hover:text-zinc-900"
             }`}
           >
-            <Palette size={18} />
+            <Palette size={16} />
             Customize
           </button>
         </div>
@@ -270,20 +270,20 @@ export default function Profile() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
             >
               {achievements.map((achievement) => {
                 const isUnlocked = unlockedAchievements.includes(achievement.id);
                 return (
                   <div 
                     key={achievement.id}
-                    className={`p-6 rounded-[2.5rem] border transition-all relative overflow-hidden ${
+                    className={`p-6 rounded-3xl border transition-all relative overflow-hidden group ${
                       isUnlocked 
-                        ? 'bg-white border-brand-200 shadow-md' 
-                        : 'bg-zinc-50 border-zinc-200 opacity-75 grayscale'
+                        ? 'bg-white border-brand-200 shadow-sm hover:shadow-md hover:border-brand-300' 
+                        : 'bg-zinc-50/50 border-zinc-200 opacity-75 grayscale'
                     }`}
                   >
-                    <div className="text-4xl mb-4">{achievement.icon}</div>
+                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{achievement.icon}</div>
                     <h3 className="font-bold text-zinc-900 mb-1">{achievement.title}</h3>
                     <p className="text-xs text-zinc-500 leading-relaxed">{achievement.description}</p>
                     
