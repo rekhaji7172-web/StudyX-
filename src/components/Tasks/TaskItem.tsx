@@ -36,8 +36,8 @@ export default function TaskItem({ task, onToggle, onDelete, onEdit }: TaskItemP
 
   return (
     <div className={cn(
-      "group flex items-center gap-4 p-4 bg-white rounded-2xl border transition-all hover:shadow-md",
-      task.completed ? "border-zinc-100 opacity-60" : "border-zinc-200"
+      "group flex items-center gap-4 p-4 premium-card transition-all hover:shadow-md",
+      task.completed ? "opacity-60" : "border-zinc-200"
     )}>
       <button 
         onClick={() => onToggle(task.id)}

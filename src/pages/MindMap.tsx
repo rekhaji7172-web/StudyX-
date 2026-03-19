@@ -220,7 +220,7 @@ export default function MindMapPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col bg-zinc-50 rounded-[2.5rem] border border-zinc-200 overflow-hidden relative shadow-inner">
+    <div className="h-[calc(100vh-8rem)] flex flex-col bg-zinc-50 rounded-[2.5rem] border border-zinc-200 overflow-hidden relative shadow-inner premium-card">
       {/* Header / Controls */}
       <div className="absolute top-6 left-6 right-6 z-20 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-3 pointer-events-auto">
@@ -257,7 +257,7 @@ export default function MindMapPage() {
           </button>
           <button 
             onClick={() => handleAddNode()}
-            className="flex items-center gap-2 bg-brand-600 text-white px-6 py-3 rounded-2xl text-sm font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100 active:scale-95"
+            className="flex items-center gap-2 action-button px-6 py-3 text-sm shadow-lg shadow-brand-100 active:scale-95"
           >
             <Plus size={18} /> New Node
           </button>
@@ -276,7 +276,7 @@ export default function MindMapPage() {
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-white max-w-md w-full rounded-[2.5rem] p-10 shadow-2xl relative"
+              className="premium-card max-w-md w-full p-10 shadow-2xl relative"
             >
               <button 
                 onClick={() => setShowHelp(false)}

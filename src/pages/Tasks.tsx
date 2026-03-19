@@ -56,7 +56,7 @@ export default function TasksPage() {
       </section>
 
       {/* Progress Section */}
-      <section className="bg-white p-8 rounded-3xl border border-zinc-200 shadow-sm">
+      <section className="premium-card p-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
@@ -138,7 +138,7 @@ export default function TasksPage() {
         </AnimatePresence>
 
         {filteredTasks.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border-2 border-dashed border-zinc-200">
+          <div className="flex flex-col items-center justify-center py-24 premium-card border-2 border-dashed border-zinc-200 bg-transparent shadow-none">
             <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
               <ListTodo size={40} className="text-zinc-200" />
             </div>

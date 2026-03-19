@@ -230,7 +230,7 @@ export default function FlashcardsPage() {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-white p-8 rounded-3xl border-2 border-brand-100 shadow-xl space-y-6"
+                  className="premium-card p-8 border-2 border-brand-100 shadow-xl space-y-6"
                 >
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-2">
@@ -239,7 +239,7 @@ export default function FlashcardsPage() {
                         autoFocus
                         value={newCard.question}
                         onChange={(e) => setNewCard({ ...newCard, question: e.target.value })}
-                        className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none resize-none h-32 text-zinc-900 font-medium"
+                        className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none resize-none h-32 text-zinc-900 font-medium transition-all"
                         placeholder="What is the concept you want to learn?"
                       />
                     </div>
@@ -248,7 +248,7 @@ export default function FlashcardsPage() {
                       <textarea 
                         value={newCard.answer}
                         onChange={(e) => setNewCard({ ...newCard, answer: e.target.value })}
-                        className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none resize-none h-32 text-zinc-900 font-medium"
+                        className="w-full p-4 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none resize-none h-32 text-zinc-900 font-medium transition-all"
                         placeholder="The explanation or answer..."
                       />
                     </div>
@@ -265,8 +265,8 @@ export default function FlashcardsPage() {
                       </select>
                     </div>
                     <div className="flex items-center gap-3">
-                      <button onClick={() => setIsAdding(false)} className="px-6 py-2.5 text-zinc-500 hover:bg-zinc-100 rounded-xl font-bold transition-all">Cancel</button>
-                      <button onClick={handleAdd} className="px-8 py-2.5 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100">Save Card</button>
+                      <button onClick={() => setIsAdding(false)} className="secondary-button">Cancel</button>
+                      <button onClick={handleAdd} className="action-button">Save Card</button>
                     </div>
                   </div>
                 </motion.div>
@@ -275,16 +275,23 @@ export default function FlashcardsPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredFlashcards.map((card) => (
-                <FlashcardItem 
-                  key={card.id} 
-                  card={card} 
-                  onDelete={deleteFlashcard} 
-                />
+                <motion.div
+                  key={card.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <FlashcardItem 
+                    card={card} 
+                    onDelete={deleteFlashcard} 
+                  />
+                </motion.div>
               ))}
             </div>
 
             {filteredFlashcards.length === 0 && !isAdding && (
-              <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-zinc-200">
+              <div className="flex flex-col items-center justify-center py-32 premium-card border-2 border-dashed border-zinc-200 bg-transparent shadow-none">
                 <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
                   <CreditCard size={40} className="text-zinc-200" />
                 </div>
@@ -297,7 +304,7 @@ export default function FlashcardsPage() {
                 {!search && selectedSubject === 'All' && (
                   <button 
                     onClick={() => setIsAdding(true)}
-                    className="mt-8 bg-zinc-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-zinc-800 transition-all shadow-lg"
+                    className="mt-8 action-button px-8 py-3"
                   >
                     Create First Card
                   </button>

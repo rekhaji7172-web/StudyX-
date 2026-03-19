@@ -155,20 +155,27 @@ export default function NotesPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredNotes.map((note) => (
-                <NoteCard 
-                  key={note.id} 
-                  note={note} 
-                  onClick={() => setSelectedNote(note)}
-                  onDelete={(e) => {
-                    e.stopPropagation();
-                    setNoteToDelete(note.id);
-                  }}
-                />
+                <motion.div
+                  key={note.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ y: -5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NoteCard 
+                    note={note} 
+                    onClick={() => setSelectedNote(note)}
+                    onDelete={(e) => {
+                      e.stopPropagation();
+                      setNoteToDelete(note.id);
+                    }}
+                  />
+                </motion.div>
               ))}
             </div>
 
             {filteredNotes.length === 0 && (
-              <div className="flex flex-col items-center justify-center py-32 bg-white rounded-3xl border-2 border-dashed border-zinc-200">
+              <div className="flex flex-col items-center justify-center py-32 premium-card border-2 border-dashed border-zinc-200 bg-transparent shadow-none">
                 <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
                   <BookOpen size={40} className="text-zinc-200" />
                 </div>
@@ -181,7 +188,7 @@ export default function NotesPage() {
                 {!search && selectedSubject === 'All' && (
                   <button 
                     onClick={handleCreate}
-                    className="mt-8 bg-zinc-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-zinc-800 transition-all shadow-lg"
+                    className="mt-8 action-button px-8 py-3"
                   >
                     Create First Note
                   </button>
@@ -208,7 +215,7 @@ export default function NotesPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-zinc-100"
+              className="premium-card p-8 max-w-md w-full shadow-2xl"
             >
               <div className="flex items-center gap-4 text-red-600 mb-6">
                 <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center">
@@ -222,13 +229,13 @@ export default function NotesPage() {
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => setNoteToDelete(null)}
-                  className="flex-1 px-6 py-3.5 bg-zinc-100 text-zinc-900 rounded-2xl font-bold hover:bg-zinc-200 transition-all"
+                  className="flex-1 secondary-button py-3.5"
                 >
                   Cancel
                 </button>
                 <button 
                   onClick={handleDeleteConfirm}
-                  className="flex-1 px-6 py-3.5 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-100"
+                  className="flex-1 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-100 py-3.5"
                 >
                   Delete
                 </button>

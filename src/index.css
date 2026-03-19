@@ -1,44 +1,60 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
-  --color-brand-950: #1e1b4b;
+  --color-brand-50: #f5f7ff;
+  --color-brand-100: #ebf0fe;
+  --color-brand-200: #dce4fd;
+  --color-brand-300: #c2cffc;
+  --color-brand-400: #9eaff9;
+  --color-brand-500: #7a8af5;
+  --color-brand-600: #5c67e8;
+  --color-brand-700: #4a52cc;
+  --color-brand-800: #3e44a6;
+  --color-brand-900: #353a85;
+  --color-brand-950: #21234f;
 }
 
 @layer base {
   body {
-    @apply bg-zinc-50 text-zinc-900 font-sans antialiased;
+    @apply bg-[#F8F9FC] text-slate-900 font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold;
   }
 }
 
 .glass {
-  @apply bg-white/80 backdrop-blur-md border border-white/20;
+  @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm;
 }
 
-.card-hover {
-  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+.premium-card {
+  @apply bg-white rounded-2xl border border-slate-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.03)] transition-all duration-300;
+}
+
+.premium-card-hover {
+  @apply hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 hover:border-brand-200/50;
+}
+
+.action-button {
+  @apply bg-brand-600 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-brand-200 hover:bg-brand-700 active:scale-95 transition-all duration-200;
+}
+
+.secondary-button {
+  @apply bg-white text-slate-700 px-6 py-3 rounded-xl font-bold text-sm border border-slate-200 hover:bg-slate-50 active:scale-95 transition-all duration-200;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
   @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-300 rounded-full hover:bg-zinc-400 transition-colors;
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
 }

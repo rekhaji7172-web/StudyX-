@@ -26,7 +26,7 @@ export default function FlashcardItem({ card, onDelete }: FlashcardItemProps) {
   const config = statusConfig[status];
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-zinc-200 group relative transition-all hover:shadow-md">
+    <div className="premium-card p-6 group relative transition-all hover:shadow-md">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 bg-zinc-50 px-2 py-1 rounded">

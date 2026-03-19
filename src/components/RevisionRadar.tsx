@@ -15,7 +15,7 @@ export default function RevisionRadar() {
   const data = getRadarData();
 
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm overflow-hidden relative flex flex-col">
+    <div className="premium-card p-8 overflow-hidden relative flex flex-col">
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-50 rounded-full opacity-50 blur-3xl" />
       
       <div className="flex items-center justify-between mb-8 relative z-10">

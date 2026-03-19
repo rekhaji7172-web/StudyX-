@@ -15,7 +15,7 @@ export default function StudyTimeline() {
   const recentSessions = [...sessions].sort((a, b) => b.timestamp - a.timestamp).slice(0, 5);
 
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm">
+    <div className="premium-card p-8">
       <div className="flex items-center justify-between mb-8">
         <h3 className="text-xl font-bold flex items-center gap-2">
           <History size={22} className="text-brand-600" />

@@ -83,7 +83,7 @@ export default function Profile() {
   return (
     <div className="flex flex-col space-y-8 pb-20">
       {/* Profile Header */}
-      <section className={`p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm relative overflow-hidden transition-colors duration-500 ${getBackgroundStyle(profile.selectedBackground)}`}>
+      <section className={`premium-card p-8 relative overflow-hidden transition-colors duration-500 ${getBackgroundStyle(profile.selectedBackground)}`}>
         {profile.selectedBackground === 'bg_stars' && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {[...Array(20)].map((_, i) => (
@@ -145,13 +145,13 @@ export default function Profile() {
                 <div className="flex gap-2">
                   <button 
                     onClick={handleSaveProfile}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-xl font-bold text-sm hover:bg-brand-700 transition-all"
+                    className="action-button flex items-center gap-2 px-4 py-2 text-sm"
                   >
                     <Save size={16} /> Save Changes
                   </button>
                   <button 
                     onClick={() => setIsEditing(false)}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-zinc-400 rounded-xl font-bold text-sm hover:bg-white/20 transition-all"
+                    className="secondary-button flex items-center gap-2 px-4 py-2 text-sm"
                   >
                     <CloseIcon size={16} /> Cancel
                   </button>
@@ -215,7 +215,7 @@ export default function Profile() {
           { label: 'Streak Record', value: `${streak} Days`, icon: Flame, color: 'text-orange-600', bg: 'bg-orange-50' },
           { label: 'Level', value: level, icon: Trophy, color: 'text-amber-600', bg: 'bg-amber-50' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex flex-col items-center text-center group hover:border-brand-200 transition-all">
+          <div key={i} className="premium-card p-6 flex flex-col items-center text-center group hover:border-brand-200 transition-all">
             <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
               <stat.icon size={24} />
             </div>
@@ -317,7 +317,7 @@ export default function Profile() {
                 return (
                   <div 
                     key={reward.id}
-                    className="bg-white p-6 rounded-[2.5rem] border border-zinc-200 shadow-sm flex flex-col"
+                    className="premium-card p-6 flex flex-col"
                   >
                     <div className="w-full aspect-square bg-zinc-50 rounded-3xl mb-6 flex items-center justify-center text-5xl border border-zinc-100 relative overflow-hidden group">
                       <div className="absolute inset-0 bg-brand-600 opacity-0 group-hover:opacity-10 transition-opacity" />
@@ -368,7 +368,7 @@ export default function Profile() {
               exit={{ opacity: 0, y: -10 }}
               className="grid grid-cols-1 md:grid-cols-2 gap-8"
             >
-              <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm">
+              <div className="premium-card p-8">
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                   <Layout size={20} className="text-brand-600" />
                   Profile Frames
@@ -401,7 +401,7 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm">
+              <div className="premium-card p-8">
                 <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
                   <Palette size={20} className="text-brand-600" />
                   Background Styles

@@ -107,7 +107,7 @@ export default function TimerPage() {
 
   return (
     <div className="flex flex-col space-y-8 pb-20">
-      <section className="flex items-center justify-between bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm relative overflow-hidden">
+      <section className="flex items-center justify-between premium-card p-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-50 rounded-full -mr-16 -mt-16 opacity-50 blur-2xl" />
         <div className="relative z-10">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Focus Arena</h1>
@@ -116,7 +116,7 @@ export default function TimerPage() {
         <div className="flex items-center gap-3 relative z-10">
           <button 
             onClick={() => setIsDeepFocus(true)}
-            className="hidden sm:flex items-center gap-2 px-6 py-3 bg-brand-600 text-white rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100"
+            className="hidden sm:flex items-center gap-2 px-6 py-3 action-button shadow-lg shadow-brand-100"
           >
             <Maximize2 size={18} /> Deep Focus
           </button>
@@ -139,7 +139,7 @@ export default function TimerPage() {
         </div>
       </section>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-12 py-8 bg-white rounded-[3rem] border border-zinc-200 shadow-sm relative overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center gap-12 py-8 premium-card relative overflow-hidden">
         <AnimatePresence>
           {showXpPopup && (
             <motion.div
@@ -257,21 +257,21 @@ export default function TimerPage() {
 
       {/* Stats Section */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex flex-col items-center text-center group hover:border-brand-200 transition-all">
+        <div className="premium-card p-6 flex flex-col items-center text-center group hover:border-brand-200 transition-all">
           <div className="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Trophy size={24} />
           </div>
           <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Current Streak</div>
           <div className="text-2xl font-bold text-zinc-900">{streak} Days</div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex flex-col items-center text-center group hover:border-emerald-200 transition-all">
+        <div className="premium-card p-6 flex flex-col items-center text-center group hover:border-emerald-200 transition-all">
           <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Target size={24} />
           </div>
           <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Sessions Today</div>
           <div className="text-2xl font-bold text-zinc-900">{sessionCount}</div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex flex-col items-center text-center group hover:border-blue-200 transition-all">
+        <div className="premium-card p-6 flex flex-col items-center text-center group hover:border-blue-200 transition-all">
           <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <History size={24} />
           </div>
@@ -280,7 +280,7 @@ export default function TimerPage() {
             {totalFocusMinutes >= 60 ? `${Math.floor(totalFocusMinutes / 60)}h ${totalFocusMinutes % 60}m` : `${totalFocusMinutes}m`}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex flex-col items-center text-center group hover:border-orange-200 transition-all">
+        <div className="premium-card p-6 flex flex-col items-center text-center group hover:border-orange-200 transition-all">
           <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <Zap size={24} />
           </div>

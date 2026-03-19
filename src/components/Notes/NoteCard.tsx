@@ -20,7 +20,7 @@ export default function NoteCard({ note, onClick, onDelete }: NoteCardProps) {
     <motion.div
       layoutId={note.id}
       onClick={onClick}
-      className="bg-white p-6 rounded-2xl border border-zinc-200 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group"
+      className="premium-card p-6 cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="px-2 py-1 bg-zinc-100 text-zinc-600 text-[10px] font-bold uppercase tracking-wider rounded">

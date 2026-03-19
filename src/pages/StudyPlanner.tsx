@@ -145,7 +145,7 @@ export default function StudyPlanner() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-xl"
+            className="premium-card p-8 shadow-xl"
           >
             <form onSubmit={handleGenerate} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-8">
@@ -157,7 +157,7 @@ export default function StudyPlanner() {
                       required
                       value={formData.subject}
                       onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none"
+                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none transition-all"
                       placeholder="e.g. Advanced Mathematics"
                     />
                   </div>
@@ -168,7 +168,7 @@ export default function StudyPlanner() {
                       required
                       value={formData.examDate}
                       onChange={e => setFormData({ ...formData, examDate: e.target.value })}
-                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none"
+                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -201,7 +201,7 @@ export default function StudyPlanner() {
                       max="12"
                       value={formData.dailyHours}
                       onChange={e => setFormData({ ...formData, dailyHours: parseInt(e.target.value) })}
-                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none"
+                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-2xl focus:ring-2 focus:ring-brand-500 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -210,13 +210,13 @@ export default function StudyPlanner() {
                 <button 
                   type="button"
                   onClick={() => setIsAdding(false)}
-                  className="px-6 py-2.5 text-zinc-500 hover:bg-zinc-100 rounded-xl font-bold transition-all"
+                  className="secondary-button"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
-                  className="bg-zinc-900 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-zinc-800 transition-all shadow-lg flex items-center gap-2"
+                  className="action-button flex items-center gap-2"
                 >
                   <Sparkles size={18} /> Generate Plan
                 </button>
@@ -235,12 +235,13 @@ export default function StudyPlanner() {
               {plans.map(plan => (
                 <motion.div
                   key={plan.id}
-                  whileHover={{ x: 5 }}
+                  whileHover={{ x: 5, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedPlanId(plan.id)}
                   className={cn(
-                    "p-4 rounded-2xl border cursor-pointer transition-all group",
+                    "p-4 rounded-2xl border cursor-pointer transition-all group premium-card",
                     selectedPlan?.id === plan.id 
-                      ? "bg-white border-brand-200 shadow-md ring-1 ring-brand-100" 
+                      ? "border-brand-200 shadow-md ring-1 ring-brand-100 bg-white" 
                       : "bg-white/50 border-zinc-200 hover:border-zinc-300"
                   )}
                 >
@@ -279,7 +280,7 @@ export default function StudyPlanner() {
                 key={selectedPlan.id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm"
+                className="premium-card p-8"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                   <div>
@@ -427,7 +428,7 @@ export default function StudyPlanner() {
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border-2 border-dashed border-zinc-200">
+        <div className="flex flex-col items-center justify-center py-32 premium-card border-2 border-dashed border-zinc-200 bg-transparent shadow-none">
           <div className="w-24 h-24 bg-zinc-50 rounded-full flex items-center justify-center mb-6">
             <CalendarIcon size={48} className="text-zinc-200" />
           </div>
@@ -437,7 +438,7 @@ export default function StudyPlanner() {
           </p>
           <button 
             onClick={() => setIsAdding(true)}
-            className="mt-8 bg-zinc-900 text-white px-10 py-4 rounded-2xl font-bold hover:bg-zinc-800 transition-all shadow-xl flex items-center gap-3"
+            className="mt-8 action-button flex items-center gap-3 px-10 py-4"
           >
             <Plus size={24} /> Create Your First Plan
           </button>

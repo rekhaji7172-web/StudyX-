@@ -43,23 +43,13 @@ export default function Dashboard() {
   const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   const masteredFlashcards = flashcards.filter(c => c.masteryLevel >= 3).length;
-
   const totalFocusMinutes = sessions.reduce((acc, s) => acc + s.duration, 0);
 
-  const stats = [
-    { label: 'Notes', value: notes.length, icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50', path: '/notes' },
-    { label: 'Flashcards', value: `${masteredFlashcards}/${flashcards.length}`, icon: CreditCard, color: 'text-purple-600', bg: 'bg-purple-50', path: '/flashcards' },
-    { label: 'Mind Maps', value: mindMaps.length, icon: Share2, color: 'text-indigo-600', bg: 'bg-indigo-50', path: '/mindmap' },
-    { label: 'Study Plans', value: plans.length, icon: CalendarIcon, color: 'text-brand-600', bg: 'bg-brand-50', path: '/planner' },
-    { label: 'Study Time', value: totalFocusMinutes >= 60 ? `${Math.floor(totalFocusMinutes / 60)}h ${totalFocusMinutes % 60}m` : `${totalFocusMinutes}m`, icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50', path: '/timer' },
-  ];
-
   const quickActions = [
-    { label: 'Study Planner', icon: CalendarIcon, color: 'text-brand-600', bg: 'bg-brand-50', path: '/planner' },
-    { label: 'Focus Timer', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50', path: '/timer' },
-    { label: 'Notes', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50', path: '/notes' },
-    { label: 'Flashcards', icon: CreditCard, color: 'text-purple-600', bg: 'bg-purple-50', path: '/flashcards' },
-    { label: 'Revision Radar', icon: Zap, color: 'text-amber-600', bg: 'bg-amber-50', path: '/timer' },
+    { label: 'Study Planner', icon: CalendarIcon, color: 'text-brand-600', bg: 'bg-brand-50', path: '/planner', desc: 'Schedule sessions' },
+    { label: 'Focus Timer', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-50', path: '/timer', desc: 'Start deep work' },
+    { label: 'Notes', icon: BookOpen, color: 'text-blue-600', bg: 'bg-blue-50', path: '/notes', desc: 'Review concepts' },
+    { label: 'Flashcards', icon: CreditCard, color: 'text-purple-600', bg: 'bg-purple-50', path: '/flashcards', desc: 'Active recall' },
   ];
 
   const todayStr = new Date().toISOString().split('T')[0];
@@ -67,253 +57,320 @@ export default function Dashboard() {
   const hasData = notes.length > 0 || flashcards.length > 0 || tasks.length > 0 || plans.length > 0;
 
   return (
-    <div className="flex flex-col space-y-6 pb-24">
-      {/* Welcome Section */}
-      {!hasData ? (
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-brand-600 text-white p-8 rounded-[2.5rem] relative overflow-hidden shadow-xl shadow-brand-100"
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
-          <div className="relative z-10">
-            <h1 className="text-2xl font-bold mb-2">Welcome to StudyX 👋</h1>
-            <p className="text-brand-100 text-sm mb-6 leading-relaxed">
-              Start your study journey by creating your first study plan. We'll help you stay organized and focused.
+    <div className="flex flex-col space-y-8 pb-32">
+      {/* Hero Welcome Section */}
+      <motion.section 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-[2rem] bg-slate-900 p-8 text-white shadow-2xl shadow-slate-200"
+      >
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-500/20 blur-3xl" />
+        <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="max-w-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-brand-300 mb-4"
+            >
+              <Sparkles size={12} />
+              <span>Your Daily Overview</span>
+            </motion.div>
+            <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
+              {hasData ? `Keep it up, ${profile.name.split(' ')[0]}!` : "Ready to start, Scholar?"}
+            </h1>
+            <p className="mt-3 text-slate-400 text-sm leading-relaxed">
+              {hasData 
+                ? `You've reached Level ${level} with ${streak} days streak. Your focus is improving every day.`
+                : "StudyX is your professional control center for academic excellence. Let's organize your first session."}
             </p>
-            <button 
-              onClick={() => navigate('/planner')}
-              className="bg-white text-brand-600 px-6 py-3 rounded-2xl font-bold text-sm shadow-lg hover:bg-brand-50 transition-colors"
-            >
-              Create Study Plan
-            </button>
-          </div>
-        </motion.section>
-      ) : (
-        <motion.section 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm relative overflow-hidden group"
-        >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-50 rounded-full -mr-32 -mt-32 opacity-50 blur-3xl group-hover:scale-110 transition-transform duration-700" />
-          
-          <div className="relative z-10 flex-1">
-            <motion.h1 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-3xl font-bold tracking-tight text-zinc-900"
-            >
-              Welcome back, {profile.name.split(' ')[0]}! 👋
-            </motion.h1>
-            <p className="text-zinc-500 mt-1">You're doing great. Level {level} reached!</p>
             
-            <div 
-              className="mt-8 max-w-md cursor-pointer group/xp"
-              onClick={() => navigate('/profile')}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Trophy size={16} className="text-amber-500" />
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest group-hover/xp:text-brand-600 transition-colors">Level {level}</span>
-                </div>
-                <span className="text-xs font-bold text-zinc-900">{xp} / {xpForNextLevel} XP</span>
-              </div>
-              <div className="h-3 bg-zinc-100 rounded-full overflow-hidden border border-zinc-200/50">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${xpProgress}%` }}
-                  transition={{ duration: 1.5, ease: "circOut" }}
-                  className="h-full bg-gradient-to-r from-brand-500 to-brand-600 rounded-full shadow-lg shadow-brand-100"
-                />
-              </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <button 
+                onClick={() => navigate('/timer')}
+                className="action-button flex items-center gap-2"
+              >
+                <Clock size={18} />
+                <span>Start Session</span>
+              </button>
+              {!hasData && (
+                <button 
+                  onClick={() => navigate('/planner')}
+                  className="secondary-button !bg-white/5 !text-white !border-white/10 hover:!bg-white/10"
+                >
+                  Create Plan
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-4 relative z-10">
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="flex flex-col items-center justify-center bg-orange-50 text-orange-700 w-24 h-24 rounded-[2rem] border border-orange-100 font-bold shadow-sm"
-            >
-              <Flame size={28} className="fill-orange-500 text-orange-500 mb-1" />
-              <span className="text-xl">{streak}</span>
-              <span className="text-[8px] uppercase tracking-widest">Streak</span>
-            </motion.div>
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/notes')}
-              className="flex flex-col items-center justify-center bg-brand-600 text-white w-24 h-24 rounded-[2rem] hover:bg-brand-700 transition-all font-bold shadow-lg shadow-brand-100"
-            >
-              <Plus size={28} />
-              <span className="text-[8px] uppercase tracking-widest mt-1">New Note</span>
-            </motion.button>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center justify-center h-28 w-28 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <Flame size={32} className="text-orange-500 fill-orange-500/20 mb-1" />
+              <span className="text-2xl font-black">{streak}</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Streak</span>
+            </div>
+            <div className="flex flex-col items-center justify-center h-28 w-28 rounded-3xl bg-brand-600 shadow-lg shadow-brand-500/20">
+              <Trophy size={32} className="text-white mb-1" />
+              <span className="text-2xl font-black">{level}</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-brand-200">Level</span>
+            </div>
           </div>
-        </motion.section>
-      )}
+        </div>
+      </motion.section>
 
-      {/* Daily Goal Card */}
+      {/* Today's Focus Card */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm flex items-center justify-between"
+        transition={{ delay: 0.2 }}
+        className="premium-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
       >
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center">
-            <Target size={24} />
+          <div className="w-14 h-14 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center shadow-inner">
+            <Target size={28} />
           </div>
           <div>
-            <h3 className="font-bold text-zinc-900">Today's Goal</h3>
-            <p className="text-zinc-500 text-sm">
+            <h3 className="text-lg font-bold text-slate-900">Today's Focus</h3>
+            <p className="text-slate-500 text-sm font-medium">
               {todaysSessions.length > 0 
-                ? `Complete ${todaysSessions.length} study sessions.` 
-                : "Start your first study session."}
+                ? `You have ${todaysSessions.length} sessions scheduled for today.` 
+                : "No sessions scheduled. Take a moment to plan your day."}
             </p>
           </div>
         </div>
-        <ArrowRight size={20} className="text-zinc-300" />
+        <button 
+          onClick={() => navigate('/planner')}
+          className="flex items-center gap-2 text-sm font-bold text-brand-600 hover:gap-3 transition-all"
+        >
+          <span>Go to Planner</span>
+          <ArrowRight size={18} />
+        </button>
       </motion.section>
 
       {/* Quick Actions Grid */}
       <section>
-        <h2 className="text-lg font-bold mb-4 px-2">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex items-center justify-between mb-5 px-1">
+          <h2 className="text-xl font-bold text-slate-900">Control Center</h2>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quick Access</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickActions.map((action, i) => (
             <motion.button 
               key={action.label}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 + 0.2 }}
-              whileHover={{ scale: 1.02 }}
+              transition={{ delay: i * 0.05 + 0.3 }}
+              whileHover={{ y: -4 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate(action.path)}
-              className="flex flex-col items-center gap-3 p-6 bg-white rounded-[2rem] border border-zinc-200 shadow-sm hover:border-brand-200 transition-all group"
+              className="premium-card p-5 flex flex-col items-center text-center group premium-card-hover"
             >
-              <div className={`w-12 h-12 ${action.bg} ${action.color} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                <action.icon size={24} />
+              <div className={`w-14 h-14 ${action.bg} ${action.color} rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform`}>
+                <action.icon size={28} />
               </div>
-              <span className="text-xs font-bold text-zinc-700">{action.label}</span>
+              <span className="text-sm font-bold text-slate-900 mb-1">{action.label}</span>
+              <span className="text-[10px] font-medium text-slate-400">{action.desc}</span>
             </motion.button>
           ))}
         </div>
       </section>
 
-      {/* Progress & Activity */}
+      {/* Analytics & Progress */}
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Task Progress */}
-        <motion.section 
+        {/* Revision Radar */}
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm"
         >
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold flex items-center gap-2">
-              <CheckSquare size={22} className="text-emerald-600" />
-              Daily Progress
-            </h2>
-          </div>
-          
-          {totalTasks > 0 ? (
-            <div className="space-y-8">
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className="text-5xl font-bold text-zinc-900">{progress}%</div>
-                  <div className="text-sm font-medium text-zinc-500 mt-2">Tasks completed</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-bold text-zinc-900">{completedTasks} of {totalTasks}</div>
-                </div>
-              </div>
-              
-              <div className="h-4 bg-zinc-100 rounded-full overflow-hidden">
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 1.5, ease: "circOut" }}
-                  className="h-full bg-emerald-500 rounded-full"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="text-center py-10">
-              <div className="w-16 h-16 bg-zinc-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-zinc-300">
-                <CheckSquare size={32} />
-              </div>
-              <p className="text-sm text-zinc-500 font-medium px-4">
-                Your progress will appear here once you start studying.
-              </p>
-            </div>
-          )}
-        </motion.section>
+          <RevisionRadar />
+        </motion.div>
 
         {/* Weekly Activity */}
         <motion.section 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="lg:col-span-2 bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm"
+          className="lg:col-span-2 premium-card p-8"
         >
           <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-xl font-bold flex items-center gap-2">
-                <TrendingUp size={22} className="text-brand-600" />
-                Weekly Activity
-              </h2>
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <TrendingUp size={20} className="text-brand-600" />
+              Weekly Activity
+            </h2>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
+                <Clock size={14} className="text-slate-400" />
+                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+                  {totalFocusMinutes}m Focus
+                </span>
+              </div>
             </div>
           </div>
           {totalFocusMinutes > 0 ? (
-            <WeeklyActivityChart />
+            <div className="h-[240px]">
+              <WeeklyActivityChart />
+            </div>
           ) : (
             <div className="text-center py-20">
-              <div className="w-16 h-16 bg-zinc-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-zinc-300">
-                <Clock size={32} />
+              <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+                <History size={32} />
               </div>
-              <p className="text-sm text-zinc-500 font-medium">
-                Complete your first study session to unlock achievements.
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">No Activity Data</p>
+              <p className="text-[11px] text-slate-400 leading-relaxed max-w-[200px] mx-auto">
+                Complete your first focus session to see your weekly performance chart.
               </p>
             </div>
           )}
         </motion.section>
       </div>
 
-      {/* Recent Achievements */}
-      <motion.section 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6 }}
-        className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm"
-      >
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold flex items-center gap-2">
-            <Trophy size={20} className="text-amber-500" />
-            Badges
-          </h3>
-          <Link to="/profile" className="text-xs font-bold text-brand-600 hover:underline">View All</Link>
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {unlockedAchievements.length > 0 ? (
-            unlockedAchievements.slice(0, 6).map((id) => {
-              const achievement = achievements.find(a => a.id === id);
-              return (
-                <div 
-                  key={id} 
-                  className="w-12 h-12 bg-zinc-50 rounded-2xl flex items-center justify-center text-2xl border border-zinc-100 shadow-sm hover:scale-110 transition-transform cursor-help"
-                  title={achievement?.title}
-                >
-                  {achievement?.icon}
+      {/* Task Progress & Timeline */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Task Progress */}
+        <motion.section 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+          className="premium-card p-8"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <CheckSquare size={20} className="text-emerald-600" />
+              Task Progress
+            </h2>
+            <Link to="/tasks" className="p-2 hover:bg-slate-50 rounded-lg text-slate-400 transition-colors">
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+          
+          {totalTasks > 0 ? (
+            <div className="space-y-8">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="text-5xl font-black text-slate-900 tracking-tighter">{progress}%</div>
+                  <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Completion Rate</div>
                 </div>
-              );
-            })
+                <div className="text-right">
+                  <div className="text-sm font-bold text-slate-900">{completedTasks}/{totalTasks}</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tasks Done</div>
+                </div>
+              </div>
+              
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 1.5, ease: "circOut" }}
+                  className="h-full bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.3)]"
+                />
+              </div>
+            </div>
           ) : (
-            <div className="w-full py-4 text-center">
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">No badges yet</p>
-              <p className="text-[10px] text-zinc-400 mt-1">Start studying to earn your first badge!</p>
+            <div className="text-center py-10">
+              <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+                <CheckSquare size={32} />
+              </div>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">No Tasks Yet</p>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Add your first task to start tracking your daily progress.
+              </p>
+              <button 
+                onClick={() => navigate('/tasks')}
+                className="mt-6 text-xs font-bold text-brand-600 hover:underline"
+              >
+                + Create Task
+              </button>
             </div>
           )}
-        </div>
-      </motion.section>
+        </motion.section>
+
+        {/* Study Timeline */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7 }}
+          className="lg:col-span-2"
+        >
+          <StudyTimeline />
+        </motion.div>
+      </div>
+
+      {/* Bottom Row: Achievements & Recent */}
+      <div className="grid md:grid-cols-2 gap-8">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="premium-card p-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold flex items-center gap-2">
+              <Trophy size={20} className="text-amber-500" />
+              Recent Badges
+            </h3>
+            <Link to="/profile" className="text-xs font-bold text-brand-600 hover:underline">View All</Link>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            {unlockedAchievements.length > 0 ? (
+              unlockedAchievements.slice(0, 6).map((id) => {
+                const achievement = achievements.find(a => a.id === id);
+                return (
+                  <motion.div 
+                    key={id} 
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-2xl border border-slate-100 shadow-sm cursor-help"
+                    title={achievement?.title}
+                  >
+                    {achievement?.icon}
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="w-full py-8 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No badges earned yet</p>
+                <p className="text-[10px] text-slate-400 mt-1">Keep studying to unlock rewards!</p>
+              </div>
+            )}
+          </div>
+        </motion.section>
+
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="premium-card p-8 bg-gradient-to-br from-brand-600 to-brand-700 text-white border-none shadow-xl shadow-brand-200"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+              <Sparkles size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold">Study Tip</h3>
+              <p className="text-brand-100 text-xs font-medium">Boost your productivity</p>
+            </div>
+          </div>
+          <p className="text-sm leading-relaxed text-brand-50 italic">
+            "The best way to learn is to teach. Try explaining a concept you've just studied to someone else, or even to yourself out loud."
+          </p>
+          <div className="mt-8 flex items-center justify-between">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-brand-600 bg-brand-400 flex items-center justify-center text-[10px] font-bold">
+                  {String.fromCharCode(64 + i)}
+                </div>
+              ))}
+              <div className="w-8 h-8 rounded-full border-2 border-brand-600 bg-brand-800 flex items-center justify-center text-[10px] font-bold">
+                +12
+              </div>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-brand-200">Join the community</span>
+          </div>
+        </motion.section>
+      </div>
     </div>
   );
 }
