@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Subject, Flashcard } from '../../types';
 import { SUBJECTS } from '../../constants';
+import { GoogleGenAI, Type } from "@google/genai";
 
 interface AIFlashcardGeneratorProps {
   onClose: () => void;
@@ -28,30 +29,57 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedCards, setGeneratedCards] = useState<Omit<Flashcard, 'id' | 'lastReviewed'>[]>([]);
   const [step, setStep] = useState<'input' | 'preview'>('input');
+  const [error, setError] = useState<string | null>(null);
 
-  const simulateAIGeneration = async (text: string) => {
+  const generateAIFlashcards = async (text: string) => {
     setIsGenerating(true);
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    setError(null);
+    
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Generate a set of educational flashcards based on the following text or topic: "${text}". 
+        The subject for these cards is "${subject}". 
+        Provide clear questions and concise answers. 
+        Return at least 5 flashcards.`,
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                question: { type: Type.STRING, description: "The question for the flashcard." },
+                answer: { type: Type.STRING, description: "The answer for the flashcard." },
+                subject: { type: Type.STRING, description: "The subject of the flashcard." }
+              },
+              required: ["question", "answer", "subject"]
+            }
+          }
+        }
+      });
 
-    // Mock logic to extract "concepts" from text
-    // In a real app, this would call Gemini API
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    const mockCards = sentences.slice(0, 5).map(s => ({
-      question: `What is the key concept in: "${s.trim().substring(0, 30)}..."?`,
-      answer: s.trim(),
-      subject,
-      masteryLevel: 0
-    }));
+      const jsonStr = response.text.trim();
+      const cards = JSON.parse(jsonStr).map((c: any) => ({
+        ...c,
+        subject: (c.subject as Subject) || subject,
+        masteryLevel: 0
+      }));
 
-    setGeneratedCards(mockCards);
-    setIsGenerating(false);
-    setStep('preview');
+      setGeneratedCards(cards);
+      setStep('preview');
+    } catch (err) {
+      console.error("AI Generation failed:", err);
+      setError("Failed to generate flashcards. Please try again with a different topic or more text.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleGenerate = () => {
-    if (input.trim().length < 10) return;
-    simulateAIGeneration(input);
+    if (input.trim().length < 5) return;
+    generateAIFlashcards(input);
   };
 
   const handleSave = () => {
@@ -66,29 +94,29 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="absolute inset-0 bg-zinc-900/60 backdrop-blur-md"
+        className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
       />
       
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20"
+        className="relative w-full max-w-2xl bg-slate-900/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/10"
       >
         {/* Header */}
-        <div className="p-8 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
+        <div className="p-8 border-b border-white/5 flex items-center justify-between bg-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-100">
+            <div className="w-10 h-10 bg-brand-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-brand-500/20">
               <Sparkles size={20} />
             </div>
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-zinc-900">AI Flashcard Generator</h2>
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-0.5">Powered by Intelligence</p>
+              <h2 className="text-xl font-bold tracking-tight text-white">AI Flashcard Generator</h2>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-0.5">Powered by Intelligence</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 hover:bg-zinc-100 rounded-xl text-zinc-400 hover:text-zinc-900 transition-all"
+            className="p-2 hover:bg-white/5 rounded-xl text-slate-500 hover:text-white transition-all"
           >
             <X size={20} />
           </button>
@@ -105,31 +133,38 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
                 className="space-y-6"
               >
                 <div className="space-y-3">
-                  <label className="block text-xs font-bold text-zinc-400 uppercase tracking-widest">Paste your notes or topic</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">Paste your notes or topic</label>
                   <textarea 
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Paste a paragraph from your textbook, a lecture transcript, or just a topic like 'Photosynthesis'..."
-                    className="w-full h-48 p-6 bg-zinc-50 border border-zinc-200 rounded-3xl focus:ring-2 focus:ring-brand-500 outline-none resize-none text-zinc-900 font-medium placeholder:text-zinc-300 transition-all"
+                    className="w-full h-48 p-6 bg-white/5 border border-white/10 rounded-3xl focus:ring-2 focus:ring-brand-500 outline-none resize-none text-white font-medium placeholder:text-slate-600 transition-all"
                   />
                 </div>
 
+                {error && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-red-400 text-sm">
+                    <AlertCircle size={18} />
+                    {error}
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
                   <div className="flex items-center gap-4">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Subject:</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Subject:</label>
                     <select 
                       value={subject}
                       onChange={(e) => setSubject(e.target.value as Subject)}
-                      className="bg-zinc-100 border-none rounded-xl text-sm font-bold px-4 py-2 focus:ring-2 focus:ring-brand-500"
+                      className="bg-white/5 border border-white/10 rounded-xl text-sm font-bold px-4 py-2 focus:ring-2 focus:ring-brand-500 text-white outline-none"
                     >
-                      {SUBJECTS.filter(s => s !== 'All').map(s => <option key={s} value={s}>{s}</option>)}
+                      {SUBJECTS.filter(s => s !== 'All').map(s => <option key={s} value={s} className="bg-slate-900">{s}</option>)}
                     </select>
                   </div>
                   
                   <button 
                     onClick={handleGenerate}
-                    disabled={isGenerating || input.trim().length < 10}
-                    className="flex items-center justify-center gap-2 bg-brand-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
+                    disabled={isGenerating || input.trim().length < 5}
+                    className="flex items-center justify-center gap-2 bg-brand-500 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand-600 transition-all shadow-lg shadow-brand-500/20 disabled:opacity-50 disabled:cursor-not-allowed min-w-[160px]"
                   >
                     {isGenerating ? (
                       <>
@@ -154,10 +189,10 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
                 className="space-y-6"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-zinc-900">Preview Generated Cards ({generatedCards.length})</h3>
+                  <h3 className="text-sm font-bold text-white">Preview Generated Cards ({generatedCards.length})</h3>
                   <button 
                     onClick={() => setStep('input')}
-                    className="text-xs font-bold text-brand-600 hover:text-brand-700 uppercase tracking-widest"
+                    className="text-xs font-bold text-brand-400 hover:text-brand-500 uppercase tracking-widest"
                   >
                     Edit Input
                   </button>
@@ -165,24 +200,24 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
 
                 <div className="space-y-3 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
                   {generatedCards.map((card, idx) => (
-                    <div key={idx} className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 space-y-2">
-                      <div className="text-[10px] font-bold text-brand-600 uppercase tracking-widest">Card {idx + 1}</div>
-                      <div className="text-sm font-bold text-zinc-900">{card.question}</div>
-                      <div className="text-xs text-zinc-500 leading-relaxed">{card.answer}</div>
+                    <div key={idx} className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+                      <div className="text-[10px] font-bold text-brand-400 uppercase tracking-widest">Card {idx + 1}</div>
+                      <div className="text-sm font-bold text-white">{card.question}</div>
+                      <div className="text-xs text-slate-400 leading-relaxed">{card.answer}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-100">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/5">
                   <button 
                     onClick={() => setStep('input')}
-                    className="px-6 py-3 text-zinc-500 hover:bg-zinc-100 rounded-2xl font-bold transition-all"
+                    className="px-6 py-3 text-slate-400 hover:bg-white/5 rounded-2xl font-bold transition-all"
                   >
                     Discard
                   </button>
                   <button 
                     onClick={handleSave}
-                    className="flex items-center gap-2 bg-brand-600 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-lg shadow-brand-100"
+                    className="flex items-center gap-2 bg-brand-500 text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-brand-600 transition-all shadow-lg shadow-brand-500/20"
                   >
                     <CheckCircle2 size={18} />
                     Add to Deck
@@ -193,9 +228,9 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
           </AnimatePresence>
         </div>
 
-        <div className="px-8 py-4 bg-zinc-50 border-t border-zinc-100 flex items-center gap-2">
-          <AlertCircle size={14} className="text-zinc-400" />
-          <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+        <div className="px-8 py-4 bg-white/5 border-t border-white/5 flex items-center gap-2">
+          <AlertCircle size={14} className="text-slate-500" />
+          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
             AI can make mistakes. Please review cards before saving.
           </p>
         </div>
@@ -203,3 +238,4 @@ export default function AIFlashcardGenerator({ onClose, onGenerate }: AIFlashcar
     </div>
   );
 }
+

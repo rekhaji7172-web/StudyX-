@@ -32,35 +32,45 @@ export default function FocusMusicPlayer() {
     };
   }, []);
 
-  // Handle mode changes
+  // Handle audio state changes
   useEffect(() => {
     if (!audioRef.current) return;
-
+    const audio = audioRef.current;
+    
     const mode = MUSIC_MODES.find(m => m.id === activeMode);
-    if (mode && mode.url) {
-      audioRef.current.src = mode.url;
-      audioRef.current.load();
-      if (isPlaying) {
-        audioRef.current.play().catch(e => console.error("Audio play failed", e));
+    const hasUrl = mode && mode.url;
+
+    if (isPlaying && activeMode !== 'silent' && hasUrl) {
+      // Only change src if it's different to avoid reloading
+      if (audio.src !== mode.url) {
+        audio.src = mode.url;
+        audio.load();
+      }
+      
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          // Ignore AbortError which happens when play() is interrupted by pause()
+          if (e.name !== 'AbortError' && e.name !== 'NotSupportedError') {
+            console.error("Audio play failed", e);
+          }
+        });
       }
     } else {
-      audioRef.current.pause();
-      audioRef.current.src = '';
+      audio.pause();
+      // Clear src if silent or no url to avoid "no supported sources" errors
+      if (activeMode === 'silent' || !hasUrl) {
+        audio.src = '';
+      }
     }
-  }, [activeMode]);
+  }, [activeMode, isPlaying]);
 
-  // Handle play/pause and volume
+  // Handle volume separately
   useEffect(() => {
-    if (!audioRef.current) return;
-
-    audioRef.current.volume = volume;
-    
-    if (isPlaying && activeMode !== 'silent') {
-      audioRef.current.play().catch(e => console.error("Audio play failed", e));
-    } else {
-      audioRef.current.pause();
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
     }
-  }, [isPlaying, volume, activeMode]);
+  }, [volume]);
 
   return (
     <div className="bg-white p-8 rounded-[2.5rem] border border-zinc-200 shadow-sm">

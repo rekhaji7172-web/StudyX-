@@ -27,10 +27,10 @@ export default function SubjectFilter({ selected, onSelect }: SubjectFilterProps
           key={subject}
           onClick={() => onSelect(subject)}
           className={cn(
-            "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap",
+            "px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border",
             selected === subject
-              ? "bg-brand-600 text-white shadow-md shadow-brand-100"
-              : "bg-white border border-zinc-200 text-zinc-500 hover:border-brand-200 hover:text-brand-600"
+              ? "bg-brand-500 text-white border-brand-500 shadow-lg shadow-brand-500/20"
+              : "bg-white/5 border-white/10 text-slate-400 hover:border-brand-500/30 hover:text-brand-400"
           )}
         >
           {subject}

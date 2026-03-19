@@ -14,28 +14,28 @@ interface LogoProps {
 
 export default function Logo({ className = '', size = 'md', showText = true }: LogoProps) {
   const sizes = {
-    sm: { icon: 16, text: 'text-lg' },
+    sm: { icon: 16, text: 'text-xl' },
     md: { icon: 24, text: 'text-2xl' },
     lg: { icon: 32, text: 'text-4xl' },
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-3 ${className}`}>
       <div className={`
-        relative flex items-center justify-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-200
-        ${size === 'sm' ? 'w-8 h-8' : size === 'md' ? 'w-10 h-10' : 'w-14 h-14'}
+        relative flex items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-xl shadow-brand-900/40
+        ${size === 'sm' ? 'w-10 h-10' : size === 'md' ? 'w-12 h-12' : 'w-16 h-16'}
       `}>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-xl" />
-        <span className={`font-black tracking-tighter ${size === 'sm' ? 'text-sm' : size === 'md' ? 'text-lg' : 'text-2xl'}`}>
+        <div className="absolute inset-0 bg-white/10 rounded-2xl blur-[1px]" />
+        <span className={`font-black tracking-tighter relative z-10 ${size === 'sm' ? 'text-lg' : size === 'md' ? 'text-xl' : 'text-3xl'}`}>
           S
         </span>
-        <div className="absolute -top-1 -right-1">
-          <Sparkles size={size === 'sm' ? 10 : size === 'md' ? 14 : 18} className="text-amber-300 fill-amber-300" />
+        <div className="absolute -top-1 -right-1 z-20">
+          <Sparkles size={size === 'sm' ? 12 : size === 'md' ? 16 : 20} className="text-amber-300 fill-amber-300 animate-pulse" />
         </div>
       </div>
       {showText && (
-        <span className={`font-black tracking-tight text-zinc-900 ${sizes[size].text}`}>
-          Study<span className="text-brand-600">X</span>
+        <span className={`font-black tracking-tight text-white ${sizes[size].text}`}>
+          Study<span className="text-brand-500">X</span>
         </span>
       )}
     </div>

@@ -83,26 +83,26 @@ export default function FlashcardBattle({ deck, onFinish }: FlashcardBattleProps
         animate={{ opacity: 1, scale: 1 }}
         className="flex-1 flex flex-col items-center justify-center text-center p-8"
       >
-        <div className="w-24 h-24 bg-amber-100 text-amber-600 rounded-[2rem] flex items-center justify-center mb-6 shadow-lg shadow-amber-100">
+        <div className="w-24 h-24 bg-amber-500/10 text-amber-400 rounded-[2rem] flex items-center justify-center mb-6 shadow-lg shadow-amber-500/10 border border-amber-500/20">
           <Trophy size={48} />
         </div>
-        <h2 className="text-4xl font-black text-zinc-900 mb-2">Battle Complete!</h2>
-        <p className="text-zinc-500 mb-8 font-medium italic">"Victory belongs to the most persevering."</p>
+        <h2 className="text-4xl font-black text-white mb-2">Battle Complete!</h2>
+        <p className="text-slate-400 mb-8 font-medium italic">"Victory belongs to the most persevering."</p>
         
         <div className="grid grid-cols-2 gap-6 w-full max-w-md mb-12">
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <div className="text-3xl font-black text-brand-600">{score}</div>
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Correct</div>
+          <div className="bg-white/5 p-6 rounded-3xl border border-white/10 shadow-sm">
+            <div className="text-3xl font-black text-brand-400">{score}</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Correct</div>
           </div>
-          <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm">
-            <div className="text-3xl font-black text-zinc-900">{Math.round((score / deck.length) * 100)}%</div>
-            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Accuracy</div>
+          <div className="bg-white/5 p-6 rounded-3xl border border-white/10 shadow-sm">
+            <div className="text-3xl font-black text-white">{Math.round((score / deck.length) * 100)}%</div>
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Accuracy</div>
           </div>
         </div>
 
         <button 
           onClick={() => onFinish(score, deck.length)}
-          className="bg-brand-600 text-white px-12 py-4 rounded-2xl font-bold hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 flex items-center gap-2"
+          className="bg-brand-500 text-white px-12 py-4 rounded-2xl font-bold hover:bg-brand-600 transition-all shadow-xl shadow-brand-500/20 flex items-center gap-2"
         >
           Collect Rewards <ArrowRight size={20} />
         </button>
@@ -114,22 +114,22 @@ export default function FlashcardBattle({ deck, onFinish }: FlashcardBattleProps
     <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full py-8">
       <div className="flex items-center justify-between mb-12">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center shadow-sm">
-            <Zap size={24} className="fill-purple-600" />
+          <div className="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/5 border border-purple-500/20">
+            <Zap size={24} className="fill-purple-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-900">Battle Mode</h2>
-            <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Card {currentIndex + 1} of {deck.length}</p>
+            <h2 className="text-xl font-bold text-white">Battle Mode</h2>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Card {currentIndex + 1} of {deck.length}</p>
           </div>
         </div>
         
         <div className="flex items-center gap-6">
           <div className="text-right">
-            <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">Score</div>
-            <div className="text-xl font-black text-zinc-900">{score}</div>
+            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Score</div>
+            <div className="text-xl font-black text-white">{score}</div>
           </div>
-          <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2 transition-colors ${
-            timeLeft <= 3 ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white border-zinc-200 text-zinc-900'
+          <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center border transition-colors ${
+            timeLeft <= 3 ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-white/5 border-white/10 text-white'
           }`}>
             <Timer size={20} className={timeLeft <= 3 ? 'animate-pulse' : ''} />
             <span className="text-lg font-black">{timeLeft}s</span>
@@ -143,10 +143,10 @@ export default function FlashcardBattle({ deck, onFinish }: FlashcardBattleProps
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          className="w-full bg-white rounded-[3rem] border-2 border-zinc-100 shadow-xl p-12 text-center mb-12"
+          className="w-full bg-slate-900/60 backdrop-blur-xl rounded-[3rem] border border-white/10 shadow-2xl p-12 text-center mb-12"
         >
-          <div className="text-[10px] font-bold text-brand-600 uppercase tracking-widest mb-8">Question</div>
-          <h3 className="text-2xl sm:text-3xl font-bold text-zinc-900 leading-tight">{currentCard.question}</h3>
+          <div className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-8">Question</div>
+          <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight">{currentCard.question}</h3>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
@@ -156,7 +156,7 @@ export default function FlashcardBattle({ deck, onFinish }: FlashcardBattleProps
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleAnswer(option)}
-              className="p-6 bg-white border-2 border-zinc-100 rounded-[2rem] text-zinc-900 font-bold hover:border-brand-600 hover:bg-brand-50 transition-all text-lg shadow-sm"
+              className="p-6 bg-white/5 border border-white/10 rounded-[2rem] text-white font-bold hover:border-brand-500 hover:bg-brand-500/10 transition-all text-lg shadow-sm"
             >
               {option}
             </motion.button>
@@ -169,8 +169,8 @@ export default function FlashcardBattle({ deck, onFinish }: FlashcardBattleProps
           <div 
             key={i} 
             className={`h-1.5 rounded-full transition-all duration-500 ${
-              i === currentIndex ? 'w-8 bg-brand-600' : 
-              i < currentIndex ? 'w-4 bg-emerald-500' : 'w-4 bg-zinc-200'
+              i === currentIndex ? 'w-8 bg-brand-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]' : 
+              i < currentIndex ? 'w-4 bg-emerald-500' : 'w-4 bg-white/10'
             }`} 
           />
         ))}
