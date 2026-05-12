@@ -23,11 +23,27 @@
 }
 
 @layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+
+  html, body {
+    @apply h-full overflow-hidden;
+    overscroll-behavior-y: none;
+  }
+
   body {
-    @apply bg-[#0f172a] text-slate-200 font-sans antialiased selection:bg-brand-500/30 selection:text-white;
+    @apply bg-[#0f172a] text-slate-200 font-sans antialiased selection:bg-brand-500/30 selection:text-white fixed inset-0;
     background-image: radial-gradient(circle at top right, #1e293b, transparent),
                       radial-gradient(circle at bottom left, #0f172a, transparent);
     background-attachment: fixed;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  input, textarea, [contenteditable="true"] {
+    user-select: text !important;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -78,6 +94,11 @@
 }
 ::-webkit-scrollbar-thumb {
   @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+}
+
+.custom-scrollbar {
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 /* Micro-animations */

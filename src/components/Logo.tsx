@@ -27,7 +27,7 @@ export default function Logo({ className = '', size = 'md', showText = true }: L
       `}>
         <div className="absolute inset-0 bg-white/10 rounded-2xl blur-[1px]" />
         <span className={`font-black tracking-tighter relative z-10 ${size === 'sm' ? 'text-lg' : size === 'md' ? 'text-xl' : 'text-3xl'}`}>
-          S
+          V
         </span>
         <div className="absolute -top-1 -right-1 z-20">
           <Sparkles size={size === 'sm' ? 12 : size === 'md' ? 16 : 20} className="text-amber-300 fill-amber-300 animate-pulse" />
@@ -35,7 +35,7 @@ export default function Logo({ className = '', size = 'md', showText = true }: L
       </div>
       {showText && (
         <span className={`font-black tracking-tight text-white ${sizes[size].text}`}>
-          Study<span className="text-brand-500">X</span>
+          VIBE<span className="text-brand-500">STUDY</span>
         </span>
       )}
     </div>

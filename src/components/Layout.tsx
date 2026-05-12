@@ -25,8 +25,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useStudyStats, useMindMaps } from '../hooks/useStudyData';
+import { usePWA } from '../hooks/usePWA';
 import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
+import PWAInstallPrompt from './PWAInstallPrompt';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -57,6 +59,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { streak, notifications, markNotificationRead, clearNotifications, checkReminders, profile, level } = useStudyStats();
+  const { isOffline } = usePWA();
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -154,9 +157,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         )}>
           {/* Mobile Header Content */}
           <div className="flex items-center justify-between w-full md:hidden">
-            <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">StudyX</span>
+            <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">VIBESTUDY</span>
 
             <div className="flex items-center gap-3">
+              {isOffline && (
+                <div className="flex items-center gap-1.5 bg-red-500/10 text-red-400 px-3 py-1.5 rounded-xl border border-red-500/20 text-[10px] font-bold uppercase tracking-widest">
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                  Offline
+                </div>
+              )}
               <div className="relative">
                 <button 
                   onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
@@ -197,6 +206,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="hidden md:flex items-center gap-6">
+            {isOffline && (
+              <div className="flex items-center gap-2 bg-red-500/10 text-red-400 px-4 py-2 rounded-2xl border border-red-500/20 font-bold text-xs shadow-lg">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span>Working Offline</span>
+              </div>
+            )}
             <div className="flex items-center gap-2.5 bg-orange-500/10 text-orange-400 px-4 py-2 rounded-2xl border border-orange-500/20 font-bold text-xs shadow-lg">
               <Flame size={18} className="fill-orange-500 animate-pulse" />
               <span>{streak} Day Streak</span>
@@ -311,7 +326,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full pb-32 md:pb-12">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -351,6 +366,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
       </div>
+      <PWAInstallPrompt />
     </div>
   );
 }
